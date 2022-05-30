@@ -1,8 +1,10 @@
 .board-wrap {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
+
+  flex: 2;
 }
 
 .board-wrap .board-row{
@@ -11,7 +13,7 @@
   justify-content: center;
   align-content: center;
 
-  margin-bottom: 20px;
+  margin-bottom: 6px;
 }
 
 .board-wrap .board-row .board-letter {
@@ -19,9 +21,9 @@
   justify-content: center;
   align-items: center;
 
-  font-size: 35px;
+  font-size: 1rem;
 
-  --size: 80px;
+  --size: 45px;
 
   width: var(--size);
   height: var(--size);
@@ -33,7 +35,7 @@
   background: var(--letter-bg-color);
   color: var(--text-color);
 
-  border-radius: 8px;
+  border-radius: 4px;
 
 
 }

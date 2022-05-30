@@ -74,7 +74,7 @@ class Game extends React.Component {
       // Go through correct word and check each letter
       for(var j = 0; j < this.state.maxLetters; j++)
       {
-        
+
         if(selectedLetters[i] == answer[j] &&  tempGuessTypes[j] !== 2 )
         {
             tempGuessTypes[i] = 1;
@@ -111,9 +111,6 @@ class Game extends React.Component {
     return (
 
       <div className="all-content-wrap">
-        <h3>Error: {this.state.error} </h3>
-        <h3>Current Row 2: {this.state.currentRow} </h3>
-        Letterss : {this.state.selectedLetters}
         <Board  maxLetters={this.state.maxLetters}
                 selectedLetters={this.state.selectedLetters}
                 currentRow={this.state.currentRow}

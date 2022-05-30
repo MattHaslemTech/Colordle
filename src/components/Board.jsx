@@ -91,8 +91,6 @@ class Board extends React.Component {
   render(){
     return(
       <div className="board-wrap">
-        <h1>Letters {this.props.selectedLetters} </h1>
-        <h1>Current Row {this.state.activeRow} </h1>
         {this.state.rows}
       </div>
     )
