@@ -1,9 +1,22 @@
 import React from 'react';
+import $ from 'jquery';
 
 import Keyboard from "./Keyboard";
 import Board from "./Board";
-import './styles/game.css';
+import Message from "./Message";
 
+import './styles/game.css';
+import raw from '../files/wordle-dictionary.txt';
+
+/*
+ * Load Dictionary
+ */
+let DICTIONARY;
+fetch(raw)
+  .then(r => r.text())
+  .then(text => {
+    DICTIONARY = text;
+  });
 
 class Game extends React.Component {
 
@@ -24,11 +37,57 @@ class Game extends React.Component {
     }
   }
 
-
-  updateSelectedLetters = (letters) =>
+  /*
+   * Update letters on board from keyboard interaction
+   */
+  updateSelectedLetters = (letters, letter) =>
   {
     this.setState({ selectedLetters: letters });
+    // Remove Previous errors
     this.setState({error: ""});
+    console.log(letters);
+    console.log(letter);
+
+    // Add little pop effect to letter
+    $('.board-letter.pop').removeClass('pop');
+    if(letter !== undefined) // If we didn't hit delete
+    {
+      var newLetterTile = $('.board-row[data-active="active"] .board-letter:empty').first();
+
+      newLetterTile.addClass('pop');
+
+    }
+
+
+
+    // If we reached max letters and the word isn't in the dictionary, the letters should be red
+    var activeRow = $('.board-row[data-active="active"]');
+    if(letters.length == this.state.maxLetters && !this.checkDictionary(letters))
+    {
+      activeRow.addClass('not-in-dictionary');
+
+      // Do shake animation
+      if(activeRow.hasClass('shake'))
+      {
+        activeRow.removeClass('shake');
+      }
+      // Set timeout is so it doesn't add class immediately after it was removed (was preventing animation trigger)
+      setTimeout(function(){
+        activeRow.addClass('shake');
+      }, 100);
+
+    }
+    else
+    {
+      if($('.board-row[data-active="active"]').hasClass('not-in-dictionary'))
+      {
+        $('.board-row[data-active="active"]').removeClass('not-in-dictionary');
+      }
+    }
+
+
+
+
   }
 
 
@@ -46,12 +105,35 @@ class Game extends React.Component {
     var misplacedLetters = this.state.misplacedLetters.slice();
     var wrongLetters = this.state.wrongLetters.slice();
 
+    var activeRow = $('.board-row[data-active="active"]');
+
     // Make sure there are enough letters
     if(selectedLetters.length < this.state.maxLetters)
     {
       this.setState({error: "Not Enough Letters"});
       return;
     }
+
+    /*
+     * Make sure word is in dictionary
+     */
+     if(!this.checkDictionary(selectedLetters))
+     {
+       this.setState({error: "Word Not Included In List"});
+
+       // Do shake animation
+       if(activeRow.hasClass('shake'))
+       {
+         activeRow.removeClass('shake');
+       }
+       // Set timeout is so it doesn't add class immediately after it was removed (was preventing animation trigger)
+       setTimeout(function(){
+         activeRow.addClass('shake');
+       }, 100);
+
+       return;
+     }
+
 
     // Check if letter is in right spot ( we're going to put arrays in each )
     var tempGuessTypes = [];
@@ -175,13 +257,39 @@ class Game extends React.Component {
 
   }
 
+
+  checkDictionary(letters)
+  {
+    // Get word
+    var word = "";
+    var selectedLetters = this.state.selectedLetters;
+    letters.forEach(function(letter){
+      word += letter;
+    })
+    console.log("word " + word);
+    console.log("selectedLetters " + letters);
+    if(DICTIONARY.includes(word))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+
+
+
   render()
   {
     return (
 
       <div className="all-content-wrap">
+        <Message message={this.state.error} />
         <Board  maxLetters={this.state.maxLetters}
                 selectedLetters={this.state.selectedLetters}
+                selectedLettersSize={this.state.selectedLetters.length}
                 currentRow={this.state.currentRow}
                 guesses={this.state.guesses}
                 guessTypes={this.state.guessTypes}

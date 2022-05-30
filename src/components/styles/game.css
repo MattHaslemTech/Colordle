@@ -7,11 +7,22 @@
   justify-content: center;
   align-items: center;
 
+  background: var(--game-bg-color);
+
+  --game-bg-color: rgba(31,41,55,1);
+
   --text-color: #fff;
-  --letter-bg-color: rgba(107, 114, 128, 1);
+  --letter-selected-row-bg-color: rgba(107, 114, 128, 1);
+  --letter-bg-color: rgba(17,24,39, 1);
+  --letter-color-glow: rgba(24,78,99, 1);
 
   --letter-correct-spot-bg-color: rgba(83,141,78, 1);
   --letter-bg-in-word-color: rgba(181,159,59, 1);
 
   --letter-not-in-word-text-color: rgba(171, 171, 171, 1);
+
+  --message-bg-color: rgba(255,255,255, 0.8);
+  --message-text-color: rgba(50,50,50, 1);
+
+  --not-in-dictionary-bg-color: rgba(225, 29, 72, 1);
 }

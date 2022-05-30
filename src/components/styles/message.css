@@ -1,0 +1,46 @@
+.message-pop-up-wrap {
+  padding: 20px;
+  border-radius: 5px;
+
+  background: var(--message-bg-color);
+  color: var(--message-text-color);
+  font-weight: bold;
+
+  opacity: 0;
+
+  position: absolute;
+  z-index: 99;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+
+
+}
+
+.message-pop-up-wrap[data-show="show"]
+{
+  animation: showMessage 3000ms linear forwards;
+}
+
+@keyframes showMessage {
+  0%
+  {
+    opacity: 0;
+    top: 80px;
+  }
+  20%
+  {
+    opacity: 1;
+    top: 60px;
+  }
+  80%
+  {
+    opacity: 1;
+    top: 60px;
+  }
+  100%
+  {
+    opacity: 0;
+    top: 80px;
+  }
+}

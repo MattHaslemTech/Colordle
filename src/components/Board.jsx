@@ -55,9 +55,25 @@ class Board extends React.Component {
     this.setState({guesses: guesses});
 
     var rows = [];
+    var isActive = "";
     for(var i = 0; i < this.state.numberOfGuesses; i++)
     {
-        rows.push(<BoardRow key={i} letters={guesses[i]} maxLetters={this.state.maxLetters} rowNum={i} guessTypes={this.props.guessTypes} />);
+        // If it's the active row, we want to make sure css knows it
+        if(i == this.props.currentRow)
+        {
+          isActive = "active";
+        }
+        else if(i < this.props.currentRow)
+        {
+          isActive = "complete";
+        }
+        else
+        {
+          isActive = "";
+        }
+
+
+        rows.push(<BoardRow key={i} letters={guesses[i]} active={isActive} maxLetters={this.state.maxLetters} rowNum={i} guessTypes={this.props.guessTypes} />);
     }
     this.setState({rows: rows});
 
@@ -72,11 +88,26 @@ class Board extends React.Component {
 
     var oldRows = this.state.rows.slice();
     var rows = [];
+    var isActive = "";
     for(var i = 0; i < this.state.numberOfGuesses; i++)
     {
+      // If it's the active row, we want to make sure css knows it
+      if(i == this.props.currentRow)
+      {
+        isActive = "active";
+      }
+      else if(i < this.props.currentRow)
+      {
+        isActive = "complete";
+      }
+      else
+      {
+        isActive = "";
+      }
+
       if(i <= activeRow)
       {
-        rows.push(<BoardRow key={i} letters={guesses[i]} maxLetters={this.state.maxLetters} rowNum={i} guessTypes={this.props.guessTypes} />);
+        rows.push(<BoardRow key={i} letters={guesses[i]} active={isActive} maxLetters={this.state.maxLetters} rowNum={i} guessTypes={this.props.guessTypes} />);
       }
       else
       {
@@ -119,7 +150,7 @@ class BoardRow extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props.letters !== prevProps.letters) // Check if it's a new user, you can also use some unique property, like the ID  (this.props.user.id !== prevProps.user.id)
+    if(this.props.letters !== prevProps.letters)
     {
       this.refreshRow();
     }
@@ -130,7 +161,14 @@ class BoardRow extends React.Component {
     var letters = [];
     for(var i = 0; i < this.state.maxLetters; i++)
     {
-      letters.push(<BoardLetter key={"row=" + this.props.rowNum + "-letter-" + i} letter="" />)
+      // Set the next letter so css can know to give it that glow
+      var isActiveLetter = "";
+      if( i == this.props.letters.length )
+      {
+        isActiveLetter = "active";
+      }
+
+      letters.push(<BoardLetter key={"row=" + this.props.rowNum + "-letter-" + i} active={isActiveLetter} letter="" />)
     }
     this.setState({letters: letters});
   }
@@ -162,20 +200,31 @@ class BoardRow extends React.Component {
         letter = selectedLetters[i];
       }
 
-      letters.push(<BoardLetter key={"row=" + this.props.rowNum + "-letter-" + i} letter={letter} guessType={guessType} />)
+      // Set the next letter so css can know to give it that glow
+      var isActiveLetter = "";
+      if( i == selectedLetters.length )
+      {
+        isActiveLetter = "active";
+      }
+
+      letters.push(<BoardLetter key={"row=" + this.props.rowNum + "-letter-" + i} active={isActiveLetter} letter={letter} guessType={guessType} />)
     }
     this.setState({letters: letters});
   }
 
   render(){
     return(
-      <div className="board-row">
+      <div className="board-row" data-active={this.props.active}>
         {this.state.letters}
       </div>
     )
   }
 
 }
+
+
+
+
 
 
 class BoardLetter extends React.Component {
@@ -193,6 +242,7 @@ class BoardLetter extends React.Component {
     {
       this.setState({type: this.props.guessType });
     }
+
   }
 
   render(){
@@ -216,7 +266,7 @@ class BoardLetter extends React.Component {
     }
 
     return(
-      <div className="board-letter" data-type={typeClass}>
+      <div className="board-letter" data-active={this.props.active} data-type={typeClass}>
         {this.props.letter}
       </div>
     )

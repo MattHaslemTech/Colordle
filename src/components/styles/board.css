@@ -5,6 +5,8 @@
   align-items: center;
 
   flex: 2;
+
+  max-width: 90vw;
 }
 
 .board-wrap .board-row{
@@ -14,9 +16,33 @@
   align-content: center;
 
   margin-bottom: 6px;
+
+  max-width: 100%;
+}
+
+.board-wrap .board-row.shake {
+  animation: shakeRow 0.82s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes shakeRow {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
 }
 
 .board-wrap .board-row .board-letter {
+  transition: all 300ms;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -32,12 +58,42 @@
   text-transform: uppercase;
   font-weight: bold;
 
-  background: var(--letter-bg-color);
+  background: var(--letter-selected-row-bg-color);
   color: var(--text-color);
 
   border-radius: 4px;
 
+}
 
+.board-wrap .board-row[data-active=""] {
+  height: 50px;
+}
+.board-wrap .board-row[data-active=""] .board-letter {
+  max-height: 50px;
+  background: var(--letter-bg-color);
+}
+
+.board-wrap .board-row.not-in-dictionary .board-letter {
+  background: var(--not-in-dictionary-bg-color);
+}
+
+
+.board-wrap .board-row[data-active="active"] .board-letter.pop
+{
+  animation: popLetter 100ms alternate 1 ease-in-out
+}
+@keyframes popLetter {
+  from {transform: scale(1);}
+  to {transform: scale(1.1);}
+}
+
+.board-wrap .board-row[data-active="active"] .board-letter[data-active="active"]
+{
+  animation: glowLetter 1200ms alternate infinite ease-in-out
+}
+@keyframes glowLetter {
+  from {background: var(--letter-selected-row-bg-color);}
+  to {background: var(--letter-color-glow);}
 }
 
 

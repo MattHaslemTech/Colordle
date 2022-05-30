@@ -76,7 +76,6 @@ class Keyboard extends React.Component{
     if(letter == "delete")
     {
       currentLetters.pop();
-      console.log('delete');
       this.props.updateSelectedLetters(currentLetters);
       return;
     }
@@ -99,7 +98,7 @@ class Keyboard extends React.Component{
     currentLetters.push(letter);
 
     // Update selected letters
-    this.props.updateSelectedLetters(currentLetters);
+    this.props.updateSelectedLetters(currentLetters, letter);
   }
 
 
@@ -150,7 +149,6 @@ class Keyboard extends React.Component{
 
 
   render(){
-    console.log("render");
     var fullKeyboard = this.buildKeyboard();
     return(
       <>
@@ -196,7 +194,6 @@ class Letters extends React.Component {
 
 
   handleClick = () => {
-    console.log('click');
     this.props.handleClick(this.state.letter);
   }
 
