@@ -1,6 +1,7 @@
 .keyboard-wrap {
   flex: 1;
   max-width: 100vw;
+  width:
 }
 .keyboard-wrap .row {
   display: flex;
@@ -14,11 +15,11 @@
   justify-content: center;
   align-items: center;
 
-  --size: 40px;
+  --size: 4rem;
   height: var(--size);
   width: var(--size);
 
-  margin: 4px;
+  margin: 2px;
 
   text-transform: uppercase;
 
@@ -29,4 +30,17 @@
   font-weight: bold;
 
   cursor: pointer;
+}
+
+
+.keyboard-wrap .letter[data-type="correct-spot"] {
+  background: var(--letter-correct-spot-bg-color);
+}
+
+.keyboard-wrap .letter[data-type="in-word"] {
+  background: var(--letter-bg-in-word-color);
+}
+
+.keyboard-wrap .letter[data-type="not-in-word"] {
+  color: var(--letter-not-in-word-text-color);
 }

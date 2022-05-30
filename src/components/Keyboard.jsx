@@ -16,6 +16,19 @@ class Keyboard extends React.Component{
     this.state = {
       letters: this.buildLetters(),
       addLetter: this.props.addLetter,
+      correctLetters: [],
+      misplacedLetters: [],
+      wrongLetters: [],
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if(this.props.correctLetters !== prevProps.correctLetters)
+    {
+      this.setState({ correctLetters: this.props.correctLetters });
+      this.setState({ misplacedLetters: this.props.misplacedLetters });
+      this.setState({ wrongLetters: this.props.wrongLetters });
+      this.setState({ letters: this.buildLetters() });
     }
   }
 
@@ -24,11 +37,31 @@ class Keyboard extends React.Component{
   buildLetters()
   {
     var letters = [];
-    //var addLetter = this.props.addLetter;
+
+    var correctLetters = this.props.correctLetters.slice();
+    var misplacedLetters = this.props.misplacedLetters.slice();
+    var wrongLetters = this.props.wrongLetters.slice();
+
     var handleKeyClick = this.handleKeyClick;
 
     allLetters.forEach(function(letter){
-      letters.push(<Letters key={letter} letter={letter} type={"not-selected"} handleClick={handleKeyClick} />);
+      // Check for letter type
+      var letterType = "";
+      if( correctLetters.includes(letter) )
+      {
+        letterType = "correct-spot";
+      }
+      if( misplacedLetters.includes(letter) )
+      {
+        letterType = "in-word";
+      }
+      if( wrongLetters.includes(letter) )
+      {
+        letterType = "not-in-word";
+      }
+
+
+      letters.push(<Letters key={letter} letter={letter} type={letterType} handleClick={handleKeyClick} />);
     });
 
     return letters;
@@ -59,7 +92,6 @@ class Keyboard extends React.Component{
     // If the max number of letters is already there, don't do anything
     if(this.props.selectedLetters.length == this.props.maxLetters)
     {
-      console.log('what');
       return;
     }
 
@@ -118,6 +150,7 @@ class Keyboard extends React.Component{
 
 
   render(){
+    console.log("render");
     var fullKeyboard = this.buildKeyboard();
     return(
       <>
@@ -153,6 +186,14 @@ class Letters extends React.Component {
     }
   }
 
+  // Change state as props change
+  componentDidUpdate(prevProps) {
+    if(this.props.type !== prevProps.type) // Check if it's a new user, you can also use some unique property, like the ID  (this.props.user.id !== prevProps.user.id)
+    {
+      this.setState({type: this.props.type });
+    }
+  }
+
 
   handleClick = () => {
     console.log('click');
@@ -170,7 +211,7 @@ class Letters extends React.Component {
     if(this.state.letter == "delete")
     {
       return(
-        <div className="letter" data-value={this.state.letter} onClick={() => this.handleClick()}>
+        <div className="letter" data-type={this.props.type} data-value={this.state.type} onClick={() => this.handleClick()}>
         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
           <path fill="var(--text-color)" d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z"></path>
         </svg>
@@ -179,7 +220,7 @@ class Letters extends React.Component {
     }
 
     return(
-      <div className="letter" data-value={this.state.letter} onClick={() => this.handleClick()}>
+      <div className="letter" data-type={this.props.type} data-value={this.state.letter} onClick={() => this.handleClick()}>
         {content}
       </div>
     )

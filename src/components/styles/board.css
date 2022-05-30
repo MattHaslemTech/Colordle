@@ -21,9 +21,9 @@
   justify-content: center;
   align-items: center;
 
-  font-size: 1rem;
+  font-size: 2rem;
 
-  --size: 45px;
+  --size: 4rem;
 
   width: var(--size);
   height: var(--size);
