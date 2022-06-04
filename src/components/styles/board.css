@@ -63,6 +63,8 @@
 
   border-radius: 4px;
 
+  --flip-animation-delay: 100ms;
+
 }
 
 .board-wrap .board-row[data-active=""] {
@@ -97,14 +99,127 @@
 }
 
 
-.board-wrap .board-row .board-letter[data-type="correct-spot"] {
-  background: var(--letter-correct-spot-bg-color);
+
+
+
+/*
+ * Add animation and delay to tile flips
+ */
+ .board-wrap .board-row .board-letter[data-type="correct-spot"] {
+   animation: flip-letter-correct 1200ms 1 linear forwards;
+ }
+
+ .board-wrap .board-row .board-letter[data-type="in-word"] {
+   animation: flip-letter-misplaced 1200ms 1 linear forwards;
+ }
+
+ .board-wrap .board-row .board-letter[data-type="not-in-word"] {
+   animation: flip-letter-not-in-word 1200ms 1 linear forwards;
+ }
+
+.board-wrap .board-row .board-letter[data-type="correct-spot"]:nth-child(2),
+.board-wrap .board-row .board-letter[data-type="in-word"]:nth-child(2),
+.board-wrap .board-row .board-letter[data-type="not-in-word"]:nth-child(2)
+{
+  animation-delay: var(--flip-animation-delay);
 }
 
-.board-wrap .board-row .board-letter[data-type="in-word"] {
-  background: var(--letter-bg-in-word-color);
+.board-wrap .board-row .board-letter[data-type="correct-spot"]:nth-child(3),
+.board-wrap .board-row .board-letter[data-type="in-word"]:nth-child(3),
+.board-wrap .board-row .board-letter[data-type="not-in-word"]:nth-child(3)
+{
+  animation-delay: calc(var(--flip-animation-delay) * 2);
 }
 
-.board-wrap .board-row .board-letter[data-type="not-in-word"] {
-  color: var(--letter-not-in-word-text-color);
+.board-wrap .board-row .board-letter[data-type="correct-spot"]:nth-child(4),
+.board-wrap .board-row .board-letter[data-type="in-word"]:nth-child(4),
+.board-wrap .board-row .board-letter[data-type="not-in-word"]:nth-child(4)
+{
+  animation-delay: calc(var(--flip-animation-delay) * 3);
+}
+
+.board-wrap .board-row .board-letter[data-type="correct-spot"]:nth-child(5),
+.board-wrap .board-row .board-letter[data-type="in-word"]:nth-child(5),
+.board-wrap .board-row .board-letter[data-type="not-in-word"]:nth-child(5)
+{
+  animation-delay: calc(var(--flip-animation-delay) * 4);
+}
+
+.board-wrap .board-row .board-letter[data-type="correct-spot"]:nth-child(6),
+.board-wrap .board-row .board-letter[data-type="in-word"]:nth-child(6),
+.board-wrap .board-row .board-letter[data-type="not-in-word"]:nth-child(6)
+{
+  animation-delay: calc(var(--flip-animation-delay) * 5);
+}
+
+.board-wrap .board-row .board-letter[data-type="correct-spot"]:nth-child(7),
+.board-wrap .board-row .board-letter[data-type="in-word"]:nth-child(7),
+.board-wrap .board-row .board-letter[data-type="not-in-word"]:nth-child(7)
+{
+  animation-delay: calc(var(--flip-animation-delay) * 6);
+}
+
+@keyframes flip-letter-correct {
+  0% {
+    transform: rotateX(0deg);
+    background: var(--letter-selected-row-bg-color);
+    color: var(--text-color);
+  }
+  33% {
+    transform: rotateX(90deg);
+    background: var(--letter-selected-row-bg-color);
+    color: var(--text-color);
+  }
+  40%
+  {
+    transform: rotateX(90deg);
+    background: var(--letter-correct-spot-bg-color);
+  }
+  100% {
+    transform: rotateX(0deg);
+    background: var(--letter-correct-spot-bg-color);
+  }
+}
+
+
+@keyframes flip-letter-misplaced {
+  0% {
+    transform: rotateX(0deg);
+    background: var(--letter-selected-row-bg-color);
+    color: var(--text-color);
+  }
+  33% {
+    transform: rotateX(90deg);
+    background: var(--letter-selected-row-bg-color);
+    color: var(--text-color);
+  }
+  40%
+  {
+    transform: rotateX(90deg);
+    background: var(--letter-bg-in-word-color);
+  }
+  100% {
+    transform: rotateX(0deg);
+    background: var(--letter-bg-in-word-color);
+  }
+}
+
+
+@keyframes flip-letter-not-in-word {
+  0% {
+    transform: rotateX(0deg);
+  }
+  33% {
+    transform: rotateX(90deg);
+    color: var(--text-color);
+  }
+  40%
+  {
+    transform: rotateX(90deg);
+    color: var(--letter-not-in-word-text-color);
+  }
+  100% {
+    transform: rotateX(0deg);
+    color: var(--letter-not-in-word-text-color);
+  }
 }
