@@ -1,7 +1,8 @@
 import React from 'react';
-import $ from 'jquery';
+
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import './components/styles/theme-colors.css';
 //import App from './App';
 import reportWebVitals from './reportWebVitals';
 

@@ -4,6 +4,7 @@ import $ from 'jquery';
 import Keyboard from "./Keyboard";
 import Board from "./Board";
 import Message from "./Message";
+import Navbar from "./Navbar/Navbar";
 
 import './styles/game.css';
 import raw from '../files/wordle-dictionary.txt';
@@ -45,8 +46,7 @@ class Game extends React.Component {
     this.setState({ selectedLetters: letters });
     // Remove Previous errors
     this.setState({error: ""});
-    console.log(letters);
-    console.log(letter);
+
 
     // Add little pop effect to letter
     $('.board-letter.pop').removeClass('pop');
@@ -266,8 +266,7 @@ class Game extends React.Component {
     letters.forEach(function(letter){
       word += letter;
     })
-    console.log("word " + word);
-    console.log("selectedLetters " + letters);
+
     if(DICTIONARY.includes(word))
     {
       return true;
@@ -284,26 +283,29 @@ class Game extends React.Component {
   render()
   {
     return (
+      <>
+        <Navbar />
+        <div className="all-content-wrap">
 
-      <div className="all-content-wrap">
-        <Message message={this.state.error} />
-        <Board  maxLetters={this.state.maxLetters}
-                selectedLetters={this.state.selectedLetters}
-                selectedLettersSize={this.state.selectedLetters.length}
-                currentRow={this.state.currentRow}
-                guesses={this.state.guesses}
-                guessTypes={this.state.guessTypes}
-        />
-        <Keyboard addLetter={this.addSelectedLetters}
-                  updateSelectedLetters={this.updateSelectedLetters}
-                  handleSubmit={this.handleSubmit}
+          <Message message={this.state.error} />
+          <Board  maxLetters={this.state.maxLetters}
                   selectedLetters={this.state.selectedLetters}
-                  maxLetters={this.state.maxLetters}
-                  correctLetters={this.state.correctLetters}
-                  misplacedLetters={this.state.misplacedLetters}
-                  wrongLetters={this.state.wrongLetters}
-                  />
-      </div>
+                  selectedLettersSize={this.state.selectedLetters.length}
+                  currentRow={this.state.currentRow}
+                  guesses={this.state.guesses}
+                  guessTypes={this.state.guessTypes}
+          />
+          <Keyboard addLetter={this.addSelectedLetters}
+                    updateSelectedLetters={this.updateSelectedLetters}
+                    handleSubmit={this.handleSubmit}
+                    selectedLetters={this.state.selectedLetters}
+                    maxLetters={this.state.maxLetters}
+                    correctLetters={this.state.correctLetters}
+                    misplacedLetters={this.state.misplacedLetters}
+                    wrongLetters={this.state.wrongLetters}
+                    />
+        </div>
+      </>
     )
   }
 
