@@ -28,16 +28,18 @@ class Dropdown extends React.Component
 
     var i = 0;
     options.forEach((value, key) => {
-      if($(value).hasClass('heading'))
-      {
-      results.push(<div key={i} className="heading row" onClick={this.selectItem}>{value}</div>)
-      }
-      else
-      {
         results.push(<div key={i} className="item row" onClick={this.selectItem}>{value}</div>)
-      }
-
       i++;
+    });
+
+
+    var customOptions = this.props.customThemeOptions;
+    var tempKey = "heading-" + i;
+    results.push(<div key={tempKey} className="heading">Custom<div className="line"></div></div>);
+    var j = i;
+    customOptions.forEach((value, key) => {
+        results.push(<div key={j} className="item row" onClick={this.selectItem}>{value}</div>)
+      j++;
     });
 
     return results;

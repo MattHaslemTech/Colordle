@@ -14,7 +14,8 @@
 .dropdown-wrap .top-item
 {
   width: 100%;
-  background: #fff;
+  background: var(--letter-bg-color);
+  color: var(--text-color);
 
   padding: 15px;
 
@@ -26,7 +27,7 @@
   transition: all 300ms;
   position: absolute;
 
-  background: #fff;
+  background: var(--letter-bg-color);
 
   width: 100%;
 
@@ -39,6 +40,10 @@
 .dropdown-wrap[data-open="true"] .options-wrap
 {
   max-height: 30vh;
+
+  color: var(--text-color);
+
+
 }
 
 .dropdown-wrap[data-open="true"] .top-item
@@ -52,11 +57,33 @@
   width: 100%;
   padding: 15px;
 
+  cursor: pointer;
 }
 
 .dropdown-wrap .options-wrap .item:hover
 {
-  background: #ccc;
+  //background: #ccc;
+  background: var(--letter-color-glow);
+}
+
+.dropdown-wrap .options-wrap .heading
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+
+  padding: 8px;
+  font-weight: bold;
+}
+.dropdown-wrap .options-wrap .heading .line
+{
+  height: 1px;
+  width: 100%;
+
+  margin-left: 20px;
+
+  border-top: solid 1px var(--text-color);
 }
 
 

@@ -48,9 +48,15 @@ class ColorPopUp extends React.Component {
       results.push(<>{option}<div className="colors-wrap">{colorResults}</div></>);
     }
 
+
+    return results;
+  }
+
+  customThemeDropdownBuilder()
+  {
+    var results = [];
     // Add our custom made ones to that list
     // Go through each theme
-    results.push(<div className="heading">Custom</div>);
     var customThemes = require('../../../files/custom-themes.json')
     for( var themeName in customThemes)
     {
@@ -75,7 +81,6 @@ class ColorPopUp extends React.Component {
       }
       results.push(<>{option}<div className="colors-wrap">{colorResults}</div></>);
     }
-    results.push(themes[0]);
 
     return results;
   }
@@ -85,6 +90,9 @@ class ColorPopUp extends React.Component {
     // Get a list of themes to toss in the dropdown
     var themeOptions = this.themeDropdownBuilder();
 
+    // Get a list of cutom themes to toss in the dropdown
+    var customThemeOptions = this.customThemeDropdownBuilder();
+
     return(
       <div className="pop-up-wrap">
         <div className="content-wrap">
@@ -92,7 +100,7 @@ class ColorPopUp extends React.Component {
           <div className="row">
             <div className="title">Theme:</div>
             <div className="right-side option">
-              <Dropdown options={themeOptions} />
+              <Dropdown options={themeOptions} customThemeOptions={customThemeOptions} />
             </div>
           </div>
         </div>
