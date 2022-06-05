@@ -1,0 +1,42 @@
+.dropdown-wrap
+{
+  width: 100%;
+  position: relative;
+
+  color: #000;
+}
+
+.dropdown-wrap *
+{
+    box-sizing: border-box;
+}
+
+.dropdown-wrap .top-item
+{
+  width: 100%;
+  background: #fff;
+
+  padding: 5px;
+}
+
+.dropdown-wrap .options-wrap
+{
+  position: absolute;
+
+  background: #fff;
+
+  width: 100%;
+}
+
+.dropdown-wrap .options-wrap .item
+{
+  transition: all 0ms;
+  width: 100%;
+  padding: 5px;
+
+}
+
+.dropdown-wrap .options-wrap .item:hover
+{
+  background: #ccc;
+}

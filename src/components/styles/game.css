@@ -1,5 +1,7 @@
 .all-content-wrap{
   height: 100vh;
+  max-height: 100vh;
+  box-sizing: border-box;
   width: 100vw;
   max-width: 100vw;
 

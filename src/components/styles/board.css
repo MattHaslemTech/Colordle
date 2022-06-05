@@ -47,9 +47,9 @@
   justify-content: center;
   align-items: center;
 
-  font-size: 2rem;
+  font-size: 1.5rem;
 
-  --size: 4rem;
+  --size: 3rem;
 
   width: var(--size);
   height: var(--size);
@@ -69,9 +69,10 @@
 
 .board-wrap .board-row[data-active=""] {
   height: 50px;
+  max-height: 35px;
 }
 .board-wrap .board-row[data-active=""] .board-letter {
-  max-height: 50px;
+  max-height: 100%;
   background: var(--letter-bg-color);
 }
 
@@ -222,4 +223,20 @@
     transform: rotateX(0deg);
     color: var(--letter-not-in-word-text-color);
   }
+}
+
+
+
+@media only screen and (max-width: 600px) {
+  .board-wrap .board-row .board-letter {
+
+    font-size: 2rem;
+
+    --size: 4rem;
+
+    width: var(--size);
+    height: var(--size);
+
+  }
+
 }
