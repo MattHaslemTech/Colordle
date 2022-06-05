@@ -284,6 +284,7 @@ class Game extends React.Component {
   {
     return (
       <>
+      <div id="game-master">
         <Navbar />
         <div className="all-content-wrap">
 
@@ -305,6 +306,7 @@ class Game extends React.Component {
                     wrongLetters={this.state.wrongLetters}
                     />
         </div>
+      </div>
       </>
     )
   }

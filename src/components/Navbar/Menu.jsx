@@ -15,7 +15,6 @@ class Menu extends React.Component
 
   openPopUp(e) {
     var popup = e.target.getAttribute("data-popup");
-    console.log(popup);
   }
 
   render(){
