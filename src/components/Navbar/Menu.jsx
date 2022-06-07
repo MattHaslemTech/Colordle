@@ -1,5 +1,7 @@
 import React from 'react';
 
+import $ from 'jquery';
+
 import ColorPopUp from './Popups/ColorPopup';
 
 import '../styles/menu.css';
@@ -15,6 +17,13 @@ class Menu extends React.Component
 
   openPopUp(e) {
     var popup = e.target.getAttribute("data-popup");
+    console.log(popup);
+    $('.pop-up-wrap[data-name="' + popup + '"]').addClass('open');
+  }
+
+  closePopup()
+  {
+    $('.pop-up-wrap.open').removeClass('open');
   }
 
   render(){

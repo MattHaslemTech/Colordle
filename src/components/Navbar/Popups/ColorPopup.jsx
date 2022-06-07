@@ -6,6 +6,7 @@ import Dropdown from '../../Items/Dropdown';
 
 import '../../styles/popups.css';
 import '../../styles/items/dropdown.css';
+import '../../styles/items/buttons.css';
 
 class ColorPopUp extends React.Component {
 
@@ -131,7 +132,7 @@ class ColorPopUp extends React.Component {
     var customThemeOptions = this.customThemeDropdownBuilder();
 
     return(
-      <div className="pop-up-wrap">
+      <div className="pop-up-wrap" data-name="color">
         <div className="content-wrap">
           <h1>Edit Colors</h1>
           <div className="row">
@@ -140,6 +141,7 @@ class ColorPopUp extends React.Component {
               <Dropdown options={themeOptions} callback={this.updateTheme} customThemeOptions={customThemeOptions} />
             </div>
           </div>
+          <div className="close-popup button" onClick={window.closePopUp}>Cancel</div>
         </div>
       </div>
     )
