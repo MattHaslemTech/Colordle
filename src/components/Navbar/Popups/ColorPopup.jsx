@@ -1,5 +1,7 @@
 import React from 'react';
 
+import $ from 'jquery';
+
 import Dropdown from '../../Items/Dropdown';
 
 import '../../styles/popups.css';
@@ -13,7 +15,10 @@ class ColorPopUp extends React.Component {
 
     this.state = {
       themes: require('../../../files/themes.json'),
+      customThemes: require('../../../files/custom-themes.json'),
     }
+
+    this.updateTheme = this.updateTheme.bind(this);
   }
 
   themeDropdownBuilder()
@@ -26,7 +31,6 @@ class ColorPopUp extends React.Component {
     for( var themeName in themes)
     {
       var colors = themes[themeName];
-      console.log("val: " + themeName);
 
       var option = <div key={colorValue} className="title">{themeName}</div>;
 
@@ -45,7 +49,7 @@ class ColorPopUp extends React.Component {
         colorResults.push(<div key={key} className="color-box" style={boxStyle}></div>);
         j++;
       }
-      results.push(<>{option}<div className="colors-wrap">{colorResults}</div></>);
+      results.push(<>{option}<div data-value={themeName} className="colors-wrap">{colorResults}</div></>);
     }
 
 
@@ -57,12 +61,12 @@ class ColorPopUp extends React.Component {
     var results = [];
     // Add our custom made ones to that list
     // Go through each theme
-    var customThemes = require('../../../files/custom-themes.json')
+    var customThemes = this.state.customThemes;
     for( var themeName in customThemes)
     {
       var colors = customThemes[themeName];
 
-      var option = <div key={colorValue} className="title">{themeName}</div>;
+      var option = <div key={colorValue} data-value={themeName} className="title">{themeName}</div>;
 
       // Go through each color in theme
       var colorResults = [];
@@ -83,6 +87,39 @@ class ColorPopUp extends React.Component {
     }
 
     return results;
+  }
+
+
+  updateTheme(themeName)
+  {
+    console.log('sweet ' + themeName);
+
+    var themeSource;
+
+    // Set source as custom themes if it has the word custom in it
+    if(themeName.includes('custom') || themeName.includes('Custom'))
+    {
+      themeSource = this.state.customThemes;
+    }
+    // Set source as prebuilt themes
+    else
+    {
+      themeSource = this.state.themes;
+    }
+
+    /*
+     * Grab Values from the given theme
+     */
+     var themeColors = themeSource[themeName];
+     for(var key in themeColors)
+     {
+       var value = themeColors[key];
+
+       // Set the colors from the theme
+       key = "--" + key;
+       $('#game-master').get(0).style.setProperty(key, value);;
+     }
+
   }
 
   render(){
@@ -100,7 +137,7 @@ class ColorPopUp extends React.Component {
           <div className="row">
             <div className="title">Theme:</div>
             <div className="right-side option">
-              <Dropdown options={themeOptions} customThemeOptions={customThemeOptions} />
+              <Dropdown options={themeOptions} callback={this.updateTheme} customThemeOptions={customThemeOptions} />
             </div>
           </div>
         </div>

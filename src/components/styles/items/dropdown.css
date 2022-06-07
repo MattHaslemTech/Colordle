@@ -28,6 +28,7 @@
   position: absolute;
 
   background: var(--letter-bg-color);
+  color: var(--text-color);
 
   width: 100%;
 
@@ -40,10 +41,6 @@
 .dropdown-wrap[data-open="true"] .options-wrap
 {
   max-height: 30vh;
-
-  color: var(--text-color);
-
-
 }
 
 .dropdown-wrap[data-open="true"] .top-item

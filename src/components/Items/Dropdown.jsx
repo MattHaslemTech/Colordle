@@ -4,6 +4,10 @@ import $ from 'jquery';
 
 import '../styles/items/dropdown.css';
 
+/*
+ * Pass a callback function in each optiion (prop: callback) if you want some function to execute once an option is clicked on
+ *      Pass a value (prop: value) in each option if you want to pass a value to the callback
+ */
 class Dropdown extends React.Component
 {
   constructor(props)
@@ -28,19 +32,23 @@ class Dropdown extends React.Component
 
     var i = 0;
     options.forEach((value, key) => {
-        results.push(<div key={i} className="item row" onClick={this.selectItem}>{value}</div>)
+        results.push(<div key={i} className="item row" data-value={this.props.value} onClick={this.selectItem}>{value}</div>)
       i++;
     });
 
+    // If this has custom Theme Options
+    if(this.props.customThemeOptions)
+    {
+      var customOptions = this.props.customThemeOptions;
+      var tempKey = "heading-" + i;
+      results.push(<div key={tempKey} className="heading">Custom<div className="line"></div></div>);
+      var j = i;
+      customOptions.forEach((value, key) => {
+          results.push(<div key={j} className="item row" data-value={this.props.value} onClick={this.selectItem}>{value}</div>)
+        j++;
+      });
+    }
 
-    var customOptions = this.props.customThemeOptions;
-    var tempKey = "heading-" + i;
-    results.push(<div key={tempKey} className="heading">Custom<div className="line"></div></div>);
-    var j = i;
-    customOptions.forEach((value, key) => {
-        results.push(<div key={j} className="item row" onClick={this.selectItem}>{value}</div>)
-      j++;
-    });
 
     return results;
   }
@@ -64,9 +72,8 @@ class Dropdown extends React.Component
 
 
   selectItem = (e) => {
+    // For testing ??
     this.setState({selected: e.target});
-
-    // If this is a header don't worry about it
 
     // Grab the .item wrap holding what we clicked on
     var selectedItemHtml;
@@ -78,6 +85,15 @@ class Dropdown extends React.Component
     {
       selectedItemHtml = $(e.target).clone();
     }
+
+    // If this has a callback in props -> execute it
+    if(this.props.callback)
+    {
+      var value = $(selectedItemHtml).find('[data-value]').attr('data-value');
+      this.props.callback(value);
+    }
+
+
     $('.dropdown-wrap .top-item').html(selectedItemHtml);
   }
 
