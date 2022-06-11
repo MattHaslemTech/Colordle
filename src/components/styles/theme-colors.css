@@ -7,12 +7,17 @@ body
   --menu-bg-color: #28434F;
 
   --text-color: #fff;
+  --keyboard-text-color: #fff;
+  --board-text-color: #000;
+
   --letter-selected-row-bg-color: rgba(107, 114, 128, 1);
   --letter-bg-color: rgba(17,24,39, 1);
   --letter-color-glow: rgba(24,78,99, 1);
 
   --letter-correct-spot-bg-color: rgba(83,141,78, 1);
   --letter-bg-in-word-color: rgba(181,159,59, 1);
+
+  --keyboard-letter-background: rgba(107, 114, 128, 1);
 
   --letter-not-in-word-text-color: rgba(171, 171, 171, 1);
 

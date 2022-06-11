@@ -5,8 +5,14 @@
 
       "navbar-bg-color": "rgba(17,24,39, 1)",
       "menu-bg-color": "#28434F",
+      "hamburger-open-bg-color": "rgba(107, 114, 128, 1)",
 
       "text-color": "#fff",
+      "keyboard-text-color": "#fff",
+      "board-text-color": "#fff",
+
+      "keyboard-letter-background": "rgba(107, 114, 128, 1)",
+
       "letter-selected-row-bg-color": "rgba(107, 114, 128, 1)",
       "letter-bg-color": "rgba(17,24,39, 1)",
       "letter-color-glow": "rgba(24,78,99, 1)",
@@ -23,10 +29,16 @@
       "game-bg-color": "rgba(255, 255, 255,1)",
 
       "navbar-bg-color": "rgba(255, 255, 255, 1)",
-      "menu-bg-color": "#28434F",
+      "menu-bg-color": "rgba(240,240,240, 1)",
+      "hamburger-open-bg-color": "rgba(240,240,240, 1)",
 
       "text-color": "#000",
-      "letter-selected-row-bg-color": "rgba(107, 114, 128, 1)",
+      "keyboard-text-color": "#fff",
+      "board-text-color": "#fff",
+
+      "keyboard-letter-background": "rgba(107, 114, 128, 1)",
+
+      "letter-selected-row-bg-color": "rgba(194, 192, 192,1)",
       "letter-bg-color": "rgba(240,240,240, 1)",
       "letter-color-glow": "rgba(24,78,99, 0.4)",
 

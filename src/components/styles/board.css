@@ -59,7 +59,7 @@
   font-weight: bold;
 
   background: var(--letter-selected-row-bg-color);
-  color: var(--text-color);
+  color: var(--board-text-color);
 
   border-radius: 4px;
 
