@@ -164,12 +164,12 @@
   0% {
     transform: rotateX(0deg);
     background: var(--letter-selected-row-bg-color);
-    color: var(--text-color);
+    color: var(--board-text-color);
   }
   33% {
     transform: rotateX(90deg);
     background: var(--letter-selected-row-bg-color);
-    color: var(--text-color);
+    color: var(--board-text-color);
   }
   40%
   {
@@ -187,12 +187,12 @@
   0% {
     transform: rotateX(0deg);
     background: var(--letter-selected-row-bg-color);
-    color: var(--text-color);
+    color: var(--board-text-color);
   }
   33% {
     transform: rotateX(90deg);
     background: var(--letter-selected-row-bg-color);
-    color: var(--text-color);
+    color: var(--board-text-color);
   }
   40%
   {
@@ -212,7 +212,7 @@
   }
   33% {
     transform: rotateX(90deg);
-    color: var(--text-color);
+    color: var(--board-text-color);
   }
   40%
   {

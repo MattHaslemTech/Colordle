@@ -16,7 +16,7 @@ class ColorPopUp extends React.Component {
 
     this.state = {
       themes: require('../../../files/themes.json'),
-      customThemes: require('../../../files/custom-themes.json'),
+      userSettings: require('../../../files/user-settings.json'),
     }
 
     this.updateTheme = this.updateTheme.bind(this);
@@ -62,7 +62,8 @@ class ColorPopUp extends React.Component {
     var results = [];
     // Add our custom made ones to that list
     // Go through each theme
-    var customThemes = this.state.customThemes;
+    var customThemes = this.state.userSettings["themes"];
+
     for( var themeName in customThemes)
     {
       var colors = customThemes[themeName];
@@ -93,14 +94,12 @@ class ColorPopUp extends React.Component {
 
   updateTheme(themeName)
   {
-    console.log('sweet ' + themeName);
-
     var themeSource;
 
     // Set source as custom themes if it has the word custom in it
     if(themeName.includes('custom') || themeName.includes('Custom'))
     {
-      themeSource = this.state.customThemes;
+      themeSource = this.state.userSettings["themes"];
     }
     // Set source as prebuilt themes
     else
@@ -132,7 +131,7 @@ class ColorPopUp extends React.Component {
     var customThemeOptions = this.customThemeDropdownBuilder();
 
     return(
-      <div className="pop-up-wrap" data-name="color">
+      <div className="pop-up-wrap open" data-name="color">
         <div className="content-wrap">
           <h1>Edit Colors</h1>
           <div className="row">
@@ -141,7 +140,10 @@ class ColorPopUp extends React.Component {
               <Dropdown options={themeOptions} callback={this.updateTheme} customThemeOptions={customThemeOptions} />
             </div>
           </div>
-          <div className="close-popup button" onClick={window.closePopUp}>Cancel</div>
+          <div className="row center buttons">
+            <div className="close-popup button save" onClick={window.closePopUp}>Save</div>
+            <div className="close-popup button" onClick={window.closePopUp}>Cancel</div>
+          </div>
         </div>
       </div>
     )

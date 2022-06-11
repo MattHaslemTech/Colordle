@@ -8,7 +8,7 @@ body
 
   --text-color: #fff;
   --keyboard-text-color: #fff;
-  --board-text-color: #000;
+  --board-text-color: #fff;
 
   --letter-selected-row-bg-color: rgba(107, 114, 128, 1);
   --letter-bg-color: rgba(17,24,39, 1);
@@ -25,4 +25,7 @@ body
   --message-text-color: rgba(50,50,50, 1);
 
   --not-in-dictionary-bg-color: rgba(225, 29, 72, 1);
+
+  --button-save-bg-color: rgba(53, 94, 115, 1);
+  --button-save-text-color: #fff;
 }

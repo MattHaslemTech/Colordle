@@ -54,7 +54,7 @@
 {
   transition: all 0ms;
   width: 100%;
-  padding: 15px;
+  padding: 15px !important;
 
   cursor: pointer;
 }

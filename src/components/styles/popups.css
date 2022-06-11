@@ -58,7 +58,20 @@
   justify-content: space-between;
   align-items: center;
 
+  padding: 8px 0px;
+
   width: 100%
+}
+
+.pop-up-wrap .content-wrap .row.center
+{
+  justify-content: center;
+}
+
+.pop-up-wrap .content-wrap .row.center.buttons > *
+{
+  flex: none;
+  margin: 0px 8px;
 }
 
 .pop-up-wrap .content-wrap .row > *

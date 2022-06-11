@@ -23,6 +23,7 @@
       "letter-not-in-word-text-color": "rgba(171, 171, 171, 1)",
 
       "not-in-dictionary-bg-color": "rgba(225, 29, 72, 1)"
+
     },
 
     "White" : {
@@ -40,7 +41,7 @@
 
       "letter-selected-row-bg-color": "rgba(194, 192, 192,1)",
       "letter-bg-color": "rgba(240,240,240, 1)",
-      "letter-color-glow": "rgba(24,78,99, 0.4)",
+      "letter-color-glow": "rgba(107, 114, 128, 1)",
 
       "letter-correct-spot-bg-color": "rgba(83,141,78, 1)",
       "letter-bg-in-word-color": "rgba(181,159,59, 1)",
@@ -48,6 +49,7 @@
       "letter-not-in-word-text-color": "rgba(171, 171, 171, 1)",
 
       "not-in-dictionary-bg-color": "rgba(225, 29, 72, 1)"
+
     }
 
 
