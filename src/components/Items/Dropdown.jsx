@@ -15,14 +15,18 @@ class Dropdown extends React.Component
     super(props);
 
     this.state = {
-      items: [],
+      items: this.buildOptions(),
       open: "false",
-      selected: "",
+      selected: "Select",
       test: "",
     }
 
     this.openDropdown = this.openDropdown.bind(this);
   }
+
+
+
+
 
   // Put the options into a list of items to toss in dropdown
   buildOptions()
@@ -32,7 +36,8 @@ class Dropdown extends React.Component
 
     var i = 0;
     options.forEach((value, key) => {
-        results.push(<div key={i} className="item row" data-value={this.props.value} onClick={this.selectItem}>{value}</div>)
+      results.push(<div key={i} className="item row" data-value={this.props.value} onClick={this.selectItem}>{value}</div>);
+
       i++;
     });
 
@@ -49,9 +54,12 @@ class Dropdown extends React.Component
       });
     }
 
-
     return results;
   }
+
+
+
+
 
   openDropdown()
   {
@@ -86,6 +94,10 @@ class Dropdown extends React.Component
       selectedItemHtml = $(e.target).clone();
     }
 
+    // Update selected State
+    var selectedValue = $(e.target).closest('.item').find('[data-value]').attr('data-value');
+    this.setState({selected: selectedValue});
+
     // If this has a callback in props -> execute it
     if(this.props.callback)
     {
@@ -93,21 +105,22 @@ class Dropdown extends React.Component
       this.props.callback(value);
     }
 
-
     $('.dropdown-wrap .top-item').html(selectedItemHtml);
   }
 
 
   render()
   {
-    var options = this.buildOptions();
+
     return(
-      <div className="dropdown-wrap" data-value="" onClick={this.openDropdown} data-open={this.state.open}>
-        <div className="top-item item">
-          Select
+      <div className="dropdown-wrap" data-id={this.state.id} onClick={this.openDropdown} data-open={this.state.open}>
+        <div className="top-item">
+          <div className="item row">
+            {this.props.default}
+          </div>
         </div>
         <div className="options-wrap">
-          {options}
+          {this.state.items}
         </div>
       </div>
     )

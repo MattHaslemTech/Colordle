@@ -17,16 +17,85 @@ class ColorPopUp extends React.Component {
     this.state = {
       themes: require('../../../files/themes.json'),
       userSettings: require('../../../files/user-settings.json'),
+      defaultThemes: this.themeDropdownBuilder(),
+      customThemes: this.customThemeDropdownBuilder(),
+      selectedTheme: this.setSelectedTheme(),
     }
 
     this.updateTheme = this.updateTheme.bind(this);
   }
 
+  /*
+   * Update Colors after component has been rendered
+   */
+   componentDidMount()
+   {
+     var userSettings = require('../../../files/user-settings.json');
+     var selectedThemeName = userSettings["selected-theme"];
+
+     this.updateTheme(selectedThemeName);
+   }
+
+
+  setSelectedTheme()
+  {
+
+    // Get the selected theme from the user-settings file
+    var userSettings = require('../../../files/user-settings.json');
+    var selectedThemeName = userSettings["selected-theme"];
+
+    var customThemes = userSettings["themes"];
+    var defaultThemes = require('../../../files/themes.json');
+
+    var selectedTheme = [];
+    // If it's in default theme file
+    if(defaultThemes[selectedThemeName])
+    {
+      selectedTheme = defaultThemes[selectedThemeName];
+    }
+    // If it's in custom theme file
+    if(customThemes[selectedThemeName])
+    {
+      selectedTheme = customThemes[selectedThemeName];
+    }
+
+    var colors = selectedTheme;
+
+    var option = <div key={colorValue} className="title">{selectedThemeName}</div>;
+
+    // Go through each color in theme
+    var colorResults = [];
+    var j = 0;
+    for( var colorName in colors )
+    {
+      var colorValue = colors[colorName];
+
+      var boxStyle = {
+        background: colorValue,
+      }
+
+      var key = selectedThemeName + "-" + j.toString();
+      colorResults.push(<div key={key} className="color-box" style={boxStyle}></div>);
+      j++;
+    }
+
+
+
+    return <>{option}<div data-value={selectedThemeName} className="colors-wrap">{colorResults}</div></>;
+
+  }
+
+  /*
+   * Set default Themes
+   */
   themeDropdownBuilder()
   {
     var results = [];
-    var themes = this.state.themes;
+    var themes = require('../../../files/themes.json');
 
+    // Get the selected theme from the user-settings file
+    var userSettings = require('../../../files/user-settings.json');
+    var selectedThemeName = userSettings["selected-theme"];
 
     // Go through each theme
     for( var themeName in themes)
@@ -51,6 +120,7 @@ class ColorPopUp extends React.Component {
         j++;
       }
       results.push(<>{option}<div data-value={themeName} className="colors-wrap">{colorResults}</div></>);
+
     }
 
 
@@ -62,7 +132,11 @@ class ColorPopUp extends React.Component {
     var results = [];
     // Add our custom made ones to that list
     // Go through each theme
-    var customThemes = this.state.userSettings["themes"];
+    var userSettings = require('../../../files/user-settings.json');
+    var customThemes = userSettings["themes"];
+
+    // Get the selected theme from the user-settings file
+    var selectedThemeName = userSettings["selected-theme"];
 
     for( var themeName in customThemes)
     {
@@ -86,6 +160,7 @@ class ColorPopUp extends React.Component {
         j++;
       }
       results.push(<>{option}<div className="colors-wrap">{colorResults}</div></>);
+
     }
 
     return results;
@@ -96,6 +171,12 @@ class ColorPopUp extends React.Component {
   {
     var themeSource;
 
+    var userSettings = require('../../../files/user-settings.json');
+    var selectedThemeName = userSettings["selected-theme"];
+
+    var customThemes = userSettings["themes"];
+    var defaultThemes = require('../../../files/themes.json');
+/*
     // Set source as custom themes if it has the word custom in it
     if(themeName.includes('custom') || themeName.includes('Custom'))
     {
@@ -106,11 +187,24 @@ class ColorPopUp extends React.Component {
     {
       themeSource = this.state.themes;
     }
+*/
+    // If it's in default theme file
+    var selectedTheme = [];
+    if(defaultThemes[themeName])
+    {
+      selectedTheme = defaultThemes[themeName];
+    }
+    // If it's in custom theme file
+    if(customThemes[themeName])
+    {
+      selectedTheme = customThemes[themeName];
+    }
+
 
     /*
      * Grab Values from the given theme
      */
-     var themeColors = themeSource[themeName];
+     var themeColors = selectedTheme;
      for(var key in themeColors)
      {
        var value = themeColors[key];
@@ -122,13 +216,9 @@ class ColorPopUp extends React.Component {
 
   }
 
+
+
   render(){
-
-    // Get a list of themes to toss in the dropdown
-    var themeOptions = this.themeDropdownBuilder();
-
-    // Get a list of cutom themes to toss in the dropdown
-    var customThemeOptions = this.customThemeDropdownBuilder();
 
     return(
       <div className="pop-up-wrap open" data-name="color">
@@ -137,7 +227,7 @@ class ColorPopUp extends React.Component {
           <div className="row">
             <div className="title">Theme:</div>
             <div className="right-side option">
-              <Dropdown options={themeOptions} callback={this.updateTheme} customThemeOptions={customThemeOptions} />
+              <Dropdown options={this.state.defaultThemes} callback={this.updateTheme} default={this.state.selectedTheme} customThemeOptions={this.state.customThemes} />
             </div>
           </div>
           <div className="row center buttons">
