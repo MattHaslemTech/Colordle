@@ -17,7 +17,7 @@ class Dropdown extends React.Component
     this.state = {
       items: this.buildOptions(),
       open: "false",
-      selected: "Select",
+      selected: this.props.default,
       test: "",
     }
 
@@ -26,6 +26,21 @@ class Dropdown extends React.Component
 
 
 
+  /*
+   * When props are changed, update the dropdown
+   */
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.default !== prevProps.default) {
+      this.setState({selected: this.props.default});
+
+      console.log("state : " + this.props.default);
+
+      //var selectedItemHtml = $(this.props.default).clone();
+      //$('.dropdown-wrap .top-item').html(html);
+      console.log('dange');
+    }
+  }
 
 
   // Put the options into a list of items to toss in dropdown
