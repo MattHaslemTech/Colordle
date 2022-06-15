@@ -6,6 +6,7 @@ import Dropdown from '../../Items/Dropdown';
 import SaveButton from '../../Items/Save';
 
 import '../../styles/popups.css';
+import '../../styles/popups/colorPopup.css';
 import '../../styles/items/dropdown.css';
 import '../../styles/items/buttons.css';
 
@@ -44,10 +45,10 @@ class ColorPopUp extends React.Component {
 
    componentDidUpdate(prevProps) {
   // Typical usage (don't forget to compare props):
-  if (this.props.userID !== prevProps.userID) {
-    this.fetchData(this.props.userID);
+    if (this.props.userID !== prevProps.userID) {
+      this.fetchData(this.props.userID);
+    }
   }
-}
 
 
   setSelectedTheme()
@@ -94,7 +95,7 @@ class ColorPopUp extends React.Component {
 
 
 
-    return <>{option}<div data-value={selectedThemeName} className="colors-wrap">{colorResults}</div></>;
+    return <div className="item row">{option}<div data-value={selectedThemeName} className="colors-wrap">{colorResults}</div></div>;
 
   }
 
@@ -221,6 +222,45 @@ class ColorPopUp extends React.Component {
 
   }
 
+
+
+  /*
+   * When user selects a letter tile color
+   */
+  updateLetterTile(type)
+  {
+
+  }
+
+
+  /*
+   * Get color options for Tile dropdowns
+   */
+  getColorOptions()
+  {
+
+  }
+
+
+  /*
+   * Get default tile color item
+   *
+   * @param type:  the name of the css variable
+   */
+   getDefaultColorItem(type)
+   {
+     var themes = require('../../../files/themes.json');
+     var userSettings = require('../../../files/user-settings.json');
+
+     var tileStyle = {
+       background: "var(--" + type + ")",
+     }
+
+     var result = <div className="tile" style={tileStyle}>Q</div>
+
+     return result;
+   }
+
   /*
    * Handle API call when the User clicks 'Save'
    */
@@ -261,21 +301,58 @@ class ColorPopUp extends React.Component {
   render(){
 
     return(
-      <div className="pop-up-wrap" data-name="color">
+      <div className="pop-up-wrap open" data-name="color">
         <div className="content-wrap">
           <h1>Edit Colors</h1>
           <div className="row">
             <div className="title">Theme:</div>
             <div className="right-side option">
-              <Dropdown options={this.state.defaultThemes} callback={this.updateTheme} default={this.state.selectedTheme} customThemeOptions={this.state.customThemes} />
+              <Dropdown
+                  options={this.state.defaultThemes}
+                  callback={this.updateTheme}
+                  default={this.state.selectedTheme}
+                  name="theme-select"
+                  type="theme"
+                  customThemeOptions={this.state.customThemes}
+              />
             </div>
           </div>
+
+          <section>
+            <div className="row heading-wrap">
+              <div className="line"></div>
+              Letters
+              <div className="line"></div>
+            </div>
+
+            <div className="row">
+              <div className="title">Correct Spot:</div>
+              <div className="right-side option center">
+                <Dropdown
+                    options={this.state.defaultThemes}
+                    callback={this.updateTheme}
+                    default={this.getDefaultColorItem("letter-correct-spot-bg-color")}
+                    name="correct-letter-select"
+                    type="letter"
+                    customThemeOptions={this.state.customThemes}
+                    dropdownTriangle="true"
+                />
+              </div>
+            </div>
+
+          </section>
+
+
+
           <div className="row center buttons">
             <div className="close-popup button save" onClick={this.handleSave}>
               Save {this.state.apiResponse}
             </div>
             <div className="close-popup button" onClick={this.handleCancel}>Cancel</div>
           </div>
+
+
+
         </div>
       </div>
     )

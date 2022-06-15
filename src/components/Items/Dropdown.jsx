@@ -1,8 +1,11 @@
 import React from 'react';
+import {createRoot} from 'react-dom/client';
 
 import $ from 'jquery';
 
 import '../styles/items/dropdown.css';
+
+import DownTriangle from './icons/DownTriangle';
 
 /*
  * Pass a callback function in each optiion (prop: callback) if you want some function to execute once an option is clicked on
@@ -27,7 +30,7 @@ class Dropdown extends React.Component
 
 
   /*
-   * When props are changed, update the dropdown
+   * When props are changed, update the dropdown (used to reset dropdown when 'cancel' is pressed)
    */
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
@@ -36,9 +39,14 @@ class Dropdown extends React.Component
 
       console.log("state : " + this.props.default);
 
-      //var selectedItemHtml = $(this.props.default).clone();
-      //$('.dropdown-wrap .top-item').html(html);
-      console.log('dange');
+      // Get dropdown wrap
+      var dropdownWrap = $('[data-name="' + this.props.name + '"]').find('top-item');
+
+      var selectedItemHtml = this.props.default;
+
+      const rootElement = document.getElementById('top-' + this.props.name);
+      const root = createRoot(rootElement);
+      root.render(selectedItemHtml);
     }
   }
 
@@ -51,7 +59,7 @@ class Dropdown extends React.Component
 
     var i = 0;
     options.forEach((value, key) => {
-      results.push(<div key={i} className="item row" data-value={this.props.value} onClick={this.selectItem}>{value}</div>);
+      results.push(<div key={i} className="item row" onClick={this.selectItem}>{value}</div>);
 
       i++;
     });
@@ -120,23 +128,32 @@ class Dropdown extends React.Component
       this.props.callback(value);
     }
 
-    $('.dropdown-wrap .top-item').html(selectedItemHtml);
+    $('.dropdown-wrap[data-name="' + this.props.name + '"] .top-item').html(selectedItemHtml);
   }
 
 
   render()
   {
 
+    /*
+     *  Show dropdown triangle if props are set to do so
+     */
+    var dropdownTriangle = <></>;
+    if(this.props.dropdownTriangle && this.props.dropdownTriangle == "true")
+    {
+      dropdownTriangle = <DownTriangle />;
+    }
+
     return(
-      <div className="dropdown-wrap" data-id={this.state.id} onClick={this.openDropdown} data-open={this.state.open}>
-        <div className="top-item">
-          <div className="item row">
-            {this.props.default}
-          </div>
+      <div className="dropdown-wrap" data-id={this.state.id} data-name={this.props.name} data-type={this.props.type} onClick={this.openDropdown} data-open={this.state.open}>
+        <div className="top-item" id={"top-" + this.props.name}>
+          {this.props.default}
+          {dropdownTriangle}
         </div>
         <div className="options-wrap">
           {this.state.items}
         </div>
+
       </div>
     )
   }

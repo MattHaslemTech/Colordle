@@ -1,0 +1,47 @@
+.pop-up-wrap[data-name="color"] .tile
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  --size: 3rem;
+
+  width: var(--size);
+  height: var(--size);
+  border-radius: 5px;
+
+  text-transform: uppercase;
+  font-weight: bold;
+
+  color: var(--board-text-color);
+
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+
+}
+
+
+.pop-up-wrap[data-name="color"] .content-wrap .dropdown-wrap[data-type="letter"]
+{
+  --size: 3rem;
+  max-width: calc(var(--size) + 20px);
+  height: var(--size);
+
+  padding: 10px;
+
+
+  cursor: pointer;
+}
+
+.pop-up-wrap[data-name="color"] .content-wrap .dropdown-wrap[data-type="letter"] .top-item
+{
+  font-size: 1.5rem;
+}
+
+
+.pop-up-wrap[data-name="color"] .content-wrap .dropdown-wrap[data-type="letter"] .options-wrap
+{
+  right: 0px;
+  top: 100%;
+  min-width: 300px;
+  border-radius: 5px 0px 5px 5px;
+}
