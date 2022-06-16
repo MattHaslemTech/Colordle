@@ -21,7 +21,7 @@
   flex-wrap: nowrap;
 
   width: 100%;
-  background: var(--letter-bg-color);
+
   color: var(--text-color);
 
   border-radius: 5px;

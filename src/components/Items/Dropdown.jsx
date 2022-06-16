@@ -37,8 +37,6 @@ class Dropdown extends React.Component
     if (this.props.default !== prevProps.default) {
       this.setState({selected: this.props.default});
 
-      console.log("state : " + this.props.default);
-
       // Get dropdown wrap
       var dropdownWrap = $('[data-name="' + this.props.name + '"]').find('top-item');
 
@@ -47,6 +45,7 @@ class Dropdown extends React.Component
       const rootElement = document.getElementById('top-' + this.props.name);
       const root = createRoot(rootElement);
       root.render(selectedItemHtml);
+
     }
   }
 
@@ -84,15 +83,22 @@ class Dropdown extends React.Component
 
 
 
-  openDropdown()
+  openDropdown(e)
   {
 
     var dropdownOpen = this.state.open;
 
+    var itemClickedOn = $(e.target);
+
     // If we're closing the menu
     if(dropdownOpen == "true")
     {
-      this.setState({open: "false"});
+      // If we're using the color picker, don't worry about it.
+      if(!itemClickedOn.closest('.react-colorful').length)
+      {
+        this.setState({open: "false"});
+      }
+
     }
     else
     {
@@ -142,6 +148,7 @@ class Dropdown extends React.Component
     if(this.props.dropdownTriangle && this.props.dropdownTriangle == "true")
     {
       dropdownTriangle = <DownTriangle />;
+      console.log('cool');
     }
 
     return(

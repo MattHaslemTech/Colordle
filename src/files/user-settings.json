@@ -1,6 +1,6 @@
 {
   "id": "Sweet",
-  "selectedTheme": "White",
+  "selectedTheme": "Slate (default)",
   "themes": {
     "Custom": {
       "game-bg-color": "rgba(31,41,55,1)",

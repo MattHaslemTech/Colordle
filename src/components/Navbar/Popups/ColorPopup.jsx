@@ -5,6 +5,9 @@ import $ from 'jquery';
 import Dropdown from '../../Items/Dropdown';
 import SaveButton from '../../Items/Save';
 
+import { HexColorPicker } from "react-colorful";
+
+
 import '../../styles/popups.css';
 import '../../styles/popups/colorPopup.css';
 import '../../styles/items/dropdown.css';
@@ -25,6 +28,8 @@ class ColorPopUp extends React.Component {
       selectedThemeName: "",
       savedThemeName: require('../../../files/user-settings.json')["selectedTheme"],
       apiResponse: "",
+
+      tileCorrectSpotColorValue: "",
     }
 
     this.updateTheme = this.updateTheme.bind(this);
@@ -214,7 +219,7 @@ class ColorPopUp extends React.Component {
 
        // Set the colors from the theme
        key = "--" + key;
-       $('#game-master').get(0).style.setProperty(key, value);;
+       $('#game-master').get(0).style.setProperty(key, value);
      }
 
      // Set the new theme name
@@ -227,19 +232,59 @@ class ColorPopUp extends React.Component {
   /*
    * When user selects a letter tile color
    */
-  updateLetterTile(type)
+  updateLetterTile(color, tileName, stateName)
   {
+    /*
+     * Need to check if we're using a Custom theme.
+     *
+     * If we're not, we need to create a custom Themes
+     */
 
+    var usingCustomTheme = this.checkIfCustomTheme();
+
+    var key = '--' + tileName;
+    $('#game-master').get(0).style.setProperty(key, color);
+
+    // Set the state
+    this.setState({stateName: color});
+    console.log('sweeee ' + key);
   }
 
 
   /*
    * Get color options for Tile dropdowns
    */
-  getColorOptions()
+  getColorOptions(colorValue, tileName, stateName)
   {
 
+    // Set color picker to put in dropdown
+    var colorPicker = [<HexColorPicker color={colorValue} onChange={(color) => (this.updateLetterTile(color, tileName, stateName))} />];
+
+    // Add the save and cancel buttons
+    colorPicker.push(<><div className="close-popup button save">Save</div><div className="close-popup button">Cancel</div></>);
+
+    return colorPicker;
   }
+
+
+  /*
+   * Get default tile color item
+   *
+   * @param type:  the name of the css variable
+   */
+   getDefaultColorValue(type)
+   {
+     var themes = require('../../../files/themes.json');
+     var userSettings = require('../../../files/user-settings.json');
+
+     var tileStyle = {
+       background: "var(--" + type + ")",
+     }
+
+     var result = <div className="tile" style={tileStyle}>Q</div>
+
+     return result;
+   }
 
 
   /*
@@ -298,7 +343,26 @@ class ColorPopUp extends React.Component {
   }
 
 
+
+  /*
+   * Helper function to check if we're using a custom theme
+   */
+  checkIfCustomTheme()
+  {
+    var themes = require('../../../files/themes.json');
+
+    // If it's in default theme file
+    if(themes[this.state.selectedThemeName])
+    {
+      return false;
+    }
+
+    return true;
+  }
+
   render(){
+
+
 
     return(
       <div className="pop-up-wrap open" data-name="color">
@@ -329,13 +393,11 @@ class ColorPopUp extends React.Component {
               <div className="title">Correct Spot:</div>
               <div className="right-side option center">
                 <Dropdown
-                    options={this.state.defaultThemes}
+                    options={this.getColorOptions("#00ff00", "letter-correct-spot-bg-color", "tileCorrectSpotColorValue")}
                     callback={this.updateTheme}
                     default={this.getDefaultColorItem("letter-correct-spot-bg-color")}
                     name="correct-letter-select"
                     type="letter"
-                    customThemeOptions={this.state.customThemes}
-                    dropdownTriangle="true"
                 />
               </div>
             </div>
