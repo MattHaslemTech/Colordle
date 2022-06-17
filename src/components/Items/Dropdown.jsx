@@ -102,6 +102,9 @@ class Dropdown extends React.Component
     }
     else
     {
+      // Close any other open dropdowns
+      $('.dropdown-wrap[data-open]').attr('data-open', 'false');
+
       this.setState({open: "true"});
     }
   }
@@ -111,6 +114,12 @@ class Dropdown extends React.Component
   selectItem = (e) => {
     // For testing ??
     this.setState({selected: e.target});
+
+    // If this has a 'dontUpdateTopItem' prop, just don't do anything
+    if(this.props.dontUpdateTopItem)
+    {
+      return;
+    }
 
     // Grab the .item wrap holding what we clicked on
     var selectedItemHtml;
@@ -148,7 +157,6 @@ class Dropdown extends React.Component
     if(this.props.dropdownTriangle && this.props.dropdownTriangle == "true")
     {
       dropdownTriangle = <DownTriangle />;
-      console.log('cool');
     }
 
     return(
@@ -157,7 +165,7 @@ class Dropdown extends React.Component
           {this.props.default}
           {dropdownTriangle}
         </div>
-        <div className="options-wrap">
+        <div className="options-wrap" data-hover-effect={this.props.optionsHoverEffect}>
           {this.state.items}
         </div>
 

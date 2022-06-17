@@ -5,7 +5,7 @@ import $ from 'jquery';
 import Dropdown from '../../Items/Dropdown';
 import SaveButton from '../../Items/Save';
 
-import { HexColorPicker } from "react-colorful";
+import { RgbaColorPicker } from "react-colorful";
 
 
 import '../../styles/popups.css';
@@ -29,7 +29,8 @@ class ColorPopUp extends React.Component {
       savedThemeName: require('../../../files/user-settings.json')["selectedTheme"],
       apiResponse: "",
 
-      tileCorrectSpotColorValue: "",
+      tileCorrectSpotColorValue: this.getCurrentlySetColor("letter-correct-spot-bg-color"),
+      tileWrongSpotColorValue: this.getCurrentlySetColor("letter-bg-in-word-color"),
     }
 
     this.updateTheme = this.updateTheme.bind(this);
@@ -185,6 +186,32 @@ class ColorPopUp extends React.Component {
     return results;
   }
 
+  /*
+   * Get currently set items
+   */
+  getCurrentlySetColor(type)
+  {
+    // Get the selected theme from the user-settings file
+    var userSettings = require('../../../files/user-settings.json');
+    var selectedThemeName = userSettings["selectedTheme"];
+
+    var customThemes = userSettings["themes"];
+    var defaultThemes = require('../../../files/themes.json');
+
+    // If it's in default theme file
+    var result;
+    if(defaultThemes[selectedThemeName])
+    {
+      result = defaultThemes[selectedThemeName][type];
+    }
+    // If it's in custom theme file
+    if(customThemes[selectedThemeName])
+    {
+      result = customThemes[selectedThemeName][type];
+    }
+
+    return result;
+  }
 
   updateTheme(themeName)
   {
@@ -231,60 +258,84 @@ class ColorPopUp extends React.Component {
 
   /*
    * When user selects a letter tile color
+   *
+   * Executes when color picker changes
    */
   updateLetterTile(color, tileName, stateName)
   {
-    /*
-     * Need to check if we're using a Custom theme.
-     *
-     * If we're not, we need to create a custom Themes
-     */
 
     var usingCustomTheme = this.checkIfCustomTheme();
 
-    var key = '--' + tileName;
-    $('#game-master').get(0).style.setProperty(key, color);
 
-    // Set the state
-    this.setState({stateName: color});
-    console.log('sweeee ' + key);
+    // The color values are in an are in an array format. Let's make it a string
+    var a = "1";
+    if(color['a'])
+    {
+      a = color['a'];
+    }
+    var rgbaColor = "rgba(" + color['r'] + ", " + color['g'] + ", " + color['b'] + ", " + a + ")";
+
+    var key = '--' + tileName;
+
+    // Update Style
+    $('#game-master').get(0).style.setProperty(key, rgbaColor);
+
+    // Set the temporarily chosen color until we either save or cancel
+    this.setState({tempChosenColor: rgbaColor});
   }
 
 
   /*
-   * Get color options for Tile dropdowns
+   * Set the color picker and save/cancel buttons for tile dropdown
    */
   getColorOptions(colorValue, tileName, stateName)
   {
 
+    // Get default color
+    var defaultColorValue;
+
+    // If this is set as RGBA, we need to convert to an array
+    var rgbaColorValue = {};
+    if( colorValue.substr(0, 4) == "rgba" )
+    {
+      var rgbaArr = colorValue.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',');
+      rgbaColorValue['r'] = rgbaArr[0];
+      rgbaColorValue['g'] = rgbaArr[1];
+      rgbaColorValue['b'] = rgbaArr[2];
+      rgbaColorValue['a'] = rgbaArr[3];
+    }
+
     // Set color picker to put in dropdown
-    var colorPicker = [<HexColorPicker color={colorValue} onChange={(color) => (this.updateLetterTile(color, tileName, stateName))} />];
+    var colorPicker = [<RgbaColorPicker color={rgbaColorValue} onChange={(color) => (this.updateLetterTile(color, tileName, stateName))} />];
 
     // Add the save and cancel buttons
-    colorPicker.push(<><div className="close-popup button save">Save</div><div className="close-popup button">Cancel</div></>);
+    colorPicker.push(<><div className="close-popup button save" onClick={(e) => (this.handleSaveColorTile(tileName))}>Save</div><div className="close-popup button">Cancel</div></>);
 
     return colorPicker;
   }
 
 
   /*
-   * Get default tile color item
-   *
-   * @param type:  the name of the css variable
+   * When 'save' is clicked on tile color select
    */
-   getDefaultColorValue(type)
-   {
-     var themes = require('../../../files/themes.json');
-     var userSettings = require('../../../files/user-settings.json');
+  handleSaveColorTile(tileName)
+  {
+    var tempChosenColor = this.state.tempChosenColor;
 
-     var tileStyle = {
-       background: "var(--" + type + ")",
-     }
+    var requestURL;
 
-     var result = <div className="tile" style={tileStyle}>Q</div>
+    // Get r, g, b, a values from current chosen color
+    var rgbaArr = tempChosenColor.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',');
 
-     return result;
-   }
+
+    // Update JSON File
+    fetch("http://localhost:9000/updateUserSettings?r=" + rgbaArr[0] + "&g=" + rgbaArr[1] + "&b=" + rgbaArr[2] +  "&a=" + rgbaArr[3] +  "&colorType=" + tileName + "&currentTheme=" + this.state.selectedThemeName)
+        .then(res => res.text())
+        .then(res => console.log("Res : " + res));
+
+    console.log("tempChosenColor2: " + tempChosenColor);
+    console.log("tileName2: " + tileName);
+  }
 
 
   /*
@@ -373,6 +424,7 @@ class ColorPopUp extends React.Component {
             <div className="right-side option">
               <Dropdown
                   options={this.state.defaultThemes}
+                  optionsHoverEffect="true"
                   callback={this.updateTheme}
                   default={this.state.selectedTheme}
                   name="theme-select"
@@ -393,11 +445,26 @@ class ColorPopUp extends React.Component {
               <div className="title">Correct Spot:</div>
               <div className="right-side option center">
                 <Dropdown
-                    options={this.getColorOptions("#00ff00", "letter-correct-spot-bg-color", "tileCorrectSpotColorValue")}
-                    callback={this.updateTheme}
+                    options={this.getColorOptions(this.getCurrentlySetColor("letter-correct-spot-bg-color"), "letter-correct-spot-bg-color", "tileCorrectSpotColorValue")}
+                    optionsHoverEffect="false"
                     default={this.getDefaultColorItem("letter-correct-spot-bg-color")}
                     name="correct-letter-select"
                     type="letter"
+                    dontUpdateTopItem="true" // Means this component will handle everything
+                />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="title">Wrong Spot:</div>
+              <div className="right-side option center">
+                <Dropdown
+                    options={this.getColorOptions(this.getCurrentlySetColor("letter-bg-in-word-color"), "letter-bg-in-word-color", "tileWrongSpotColorValue")}
+                    optionsHoverEffect="false"
+                    default={this.getDefaultColorItem("letter-bg-in-word-color")}
+                    name="wrong-letter-select"
+                    type="letter"
+                    dontUpdateTopItem="true" // Means this component will handle everything
                 />
               </div>
             </div>

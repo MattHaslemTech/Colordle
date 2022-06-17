@@ -1,6 +1,6 @@
 {
   "id": "Sweet",
-  "selectedTheme": "Slate (default)",
+  "selectedTheme": "Custom",
   "themes": {
     "Custom": {
       "game-bg-color": "rgba(31,41,55,1)",
@@ -15,7 +15,7 @@
       "letter-bg-color": "rgba(17,24,39, 1)",
       "letter-color-glow": "rgba(24,78,99, 1)",
       "letter-correct-spot-bg-color": "rgba(83,141,78, 1)",
-      "letter-bg-in-word-color": "rgba(181,159,59, 1)",
+      "letter-bg-in-word-color": "rgba(48,1,255,1)",
       "letter-not-in-word-text-color": "rgba(171, 171, 171, 1)",
       "not-in-dictionary-bg-color": "rgba(225, 29, 72, 1)"
     }

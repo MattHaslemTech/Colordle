@@ -71,9 +71,8 @@
   cursor: pointer;
 }
 
-.dropdown-wrap .options-wrap .item:hover
+.dropdown-wrap .options-wrap:not([data-hover-effect="false"]) .item:hover
 {
-  //background: #ccc;
   background: var(--letter-color-glow);
 }
 
