@@ -84,6 +84,14 @@
 .pop-up-wrap .content-wrap .row > *
 {
   flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.pop-up-wrap .content-wrap .row > *:first-child
+{
+  margin-right: 10px;
 }
 
 .pop-up-wrap .content-wrap .row > * > *
@@ -92,11 +100,13 @@
 }
 
 
-.pop-up-wrap .content-wrap .row .right-side.center
+.pop-up-wrap .content-wrap .row .center
 {
   display: flex;
   flex-direction: row;
   justify-content: center;
+
+  text-align: center;
 }
 
 .pop-up-wrap .content-wrap .row.heading-wrap
