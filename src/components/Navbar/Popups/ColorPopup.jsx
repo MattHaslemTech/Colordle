@@ -13,6 +13,8 @@ import '../../styles/popups/colorPopup.css';
 import '../../styles/items/dropdown.css';
 import '../../styles/items/buttons.css';
 
+const LETTERS = ['A']
+
 class ColorPopUp extends React.Component {
 
   constructor(props)
@@ -343,7 +345,7 @@ class ColorPopUp extends React.Component {
    *
    * @param type:  the name of the css variable
    */
-   getDefaultColorItem(type)
+   getDefaultColorItem(type, letter)
    {
      var themes = require('../../../files/themes.json');
      var userSettings = require('../../../files/user-settings.json');
@@ -352,7 +354,7 @@ class ColorPopUp extends React.Component {
        background: "var(--" + type + ")",
      }
 
-     var result = <div className="tile" style={tileStyle}>Q</div>
+     var result = <div className="tile" style={tileStyle}>{letter}</div>
 
      return result;
    }
@@ -447,10 +449,11 @@ class ColorPopUp extends React.Component {
                 <Dropdown
                     options={this.getColorOptions(this.getCurrentlySetColor("letter-correct-spot-bg-color"), "letter-correct-spot-bg-color", "tileCorrectSpotColorValue")}
                     optionsHoverEffect="false"
-                    default={this.getDefaultColorItem("letter-correct-spot-bg-color")}
+                    default={this.getDefaultColorItem("letter-correct-spot-bg-color", "Q")}
                     name="correct-letter-select"
                     type="letter"
                     dontUpdateTopItem="true" // Means this component will handle everything
+                    tileLetter="Q"
                 />
               </div>
             </div>
@@ -461,10 +464,27 @@ class ColorPopUp extends React.Component {
                 <Dropdown
                     options={this.getColorOptions(this.getCurrentlySetColor("letter-bg-in-word-color"), "letter-bg-in-word-color", "tileWrongSpotColorValue")}
                     optionsHoverEffect="false"
-                    default={this.getDefaultColorItem("letter-bg-in-word-color")}
+                    default={this.getDefaultColorItem("letter-bg-in-word-color", "W")}
                     name="wrong-letter-select"
                     type="letter"
                     dontUpdateTopItem="true" // Means this component will handle everything
+                    tileLetter="W"
+                />
+              </div>
+            </div>
+
+
+            <div className="row">
+              <div className="title">Invalid Word:</div>
+              <div className="right-side option center">
+                <Dropdown
+                    options={this.getColorOptions(this.getCurrentlySetColor("not-in-dictionary-bg-color"), "not-in-dictionary-bg-color", "tileIncorrectWordColorValue")}
+                    optionsHoverEffect="false"
+                    default={this.getDefaultColorItem("not-in-dictionary-bg-color", "E")}
+                    name="wrong-word-select"
+                    type="letter"
+                    dontUpdateTopItem="true" // Means this component will handle everything
+                    tileLetter="W"
                 />
               </div>
             </div>
