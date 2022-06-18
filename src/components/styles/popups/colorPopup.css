@@ -110,3 +110,8 @@
   min-width: 300px;
   border-radius: 5px 0px 5px 5px;
 }
+
+.pop-up-wrap[data-name="color"] .content-wrap .dropdown-wrap[data-type="layout"][data-open="true"] .options-wrap
+{
+    max-height: none;
+}

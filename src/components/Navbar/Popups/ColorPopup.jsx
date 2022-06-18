@@ -311,7 +311,7 @@ class ColorPopUp extends React.Component {
     var colorPicker = [<RgbaColorPicker color={rgbaColorValue} onChange={(color) => (this.updateLetterTile(color, tileName, stateName))} />];
 
     // Add the save and cancel buttons
-    colorPicker.push(<><div className="close-popup button save" onClick={(e) => (this.handleSaveColorTile(tileName))}>Save</div><div className="close-popup button">Cancel</div></>);
+    colorPicker.push(<><div className="close-popup button save" onClick={(e) => (this.handleSaveColorTile(tileName))}>Save</div><div className="close-popup button" onClick={this.handleCancelColorTile(tileName)}>Cancel</div></>);
 
     return colorPicker;
   }
@@ -337,6 +337,23 @@ class ColorPopUp extends React.Component {
 
     console.log("tempChosenColor2: " + tempChosenColor);
     console.log("tileName2: " + tileName);
+  }
+
+
+  /*
+   * When 'cancel' is clicked on tile color select
+   */
+  handleCancelColorTile(tileName)
+  {
+    /*
+    var tempChosenColor = this.state.tempChosenColor;
+
+    var requestURL;
+
+    // Get r, g, b, a values from current chosen color
+    var rgbaArr = tempChosenColor.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',');
+    */
+    console.log('sweet');
   }
 
 

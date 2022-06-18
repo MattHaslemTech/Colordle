@@ -3,7 +3,7 @@
   "selectedTheme": "Custom",
   "themes": {
     "Custom": {
-      "game-bg-color": "rgba(171,51,171,1)",
+      "game-bg-color": "rgba(50,94,145,1)",
       "navbar-bg-color": "rgba(15,85,237,1)",
       "menu-bg-color": "rgba(40,61,79,1)",
       "hamburger-open-bg-color": "rgba(107, 114, 128, 1)",
