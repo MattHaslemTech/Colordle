@@ -152,7 +152,7 @@
     text-align: left;
   }
 
-  .pop-up-wrap .content-wrap section.mobile-column .row > *:first-child
+  .pop-up-wrap .content-wrap section.mobile-column .row:not(.heading-wrap) > *:first-child
   {
     margin-right: 0px;
   }
