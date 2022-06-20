@@ -10,5 +10,5 @@
 
 .button.save {
   background: var(--letter-color-glow);
-  color: var(--board-text-color);
+  color: var(--text-color);
 }

@@ -44,7 +44,7 @@
 
   color: var(--text-color);
 
-  width: min(600px, 95vw);
+  width: min(800px, 95vw);
   max-height: 95vh;
 
   box-sizing: border-box;
@@ -128,4 +128,37 @@
 {
   margin: 20px;
   border-bottom: solid 1px var(--text-color);
+}
+
+@media only screen and (max-width: 600px) {
+  .pop-up-wrap .content-wrap section.mobile-column .row:not(.heading-wrap)
+  {
+    flex-direction: column;
+  }
+
+  .pop-up-wrap .content-wrap section.mobile-column .row > *
+  {
+    margin-bottom: 15px;
+    width: 100%;
+  }
+
+  .pop-up-wrap .content-wrap section.mobile-column .row > .right-side
+  {
+    flex: 2.5;
+  }
+
+  .pop-up-wrap .content-wrap section.mobile-column .row .center
+  {
+    text-align: left;
+  }
+
+  .pop-up-wrap .content-wrap section.mobile-column .row > *:first-child
+  {
+    margin-right: 0px;
+  }
+
+  .pop-up-wrap .content-wrap section.mobile-column .row > .react-colorful
+  {
+    min-height: 250px;
+  }
 }

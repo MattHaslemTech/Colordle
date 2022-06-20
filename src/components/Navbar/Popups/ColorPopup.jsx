@@ -33,6 +33,16 @@ class ColorPopUp extends React.Component {
 
       tileCorrectSpotColorValue: this.getCurrentlySetColor("letter-correct-spot-bg-color"),
       tileWrongSpotColorValue: this.getCurrentlySetColor("letter-bg-in-word-color"),
+      tileIncorrectWordColorValue: this.getCurrentlySetColor("not-in-dictionary-bg-color"),
+
+      layoutBackgroundColorValue: this.getCurrentlySetColor("game-bg-color"),
+      layoutNavbarBackgroundColorValue: this.getCurrentlySetColor("navbar-bg-color"),
+      layoutMenuColorValue: this.getCurrentlySetColor("menu-bg-color"),
+      layoutHamburgerBackgroundColorValue: this.getCurrentlySetColor("hamburger-open-bg-color"),
+
+      textRegColorValue: this.getCurrentlySetColor("text-color"),
+      layoutHamburgerBackgroundColorValue: this.getCurrentlySetColor("keyboard-text-color"),
+
     }
 
     this.updateTheme = this.updateTheme.bind(this);
@@ -311,7 +321,7 @@ class ColorPopUp extends React.Component {
     var colorPicker = [<RgbaColorPicker color={rgbaColorValue} onChange={(color) => (this.updateLetterTile(color, tileName, stateName))} />];
 
     // Add the save and cancel buttons
-    colorPicker.push(<><div className="close-popup button save" onClick={(e) => (this.handleSaveColorTile(tileName))}>Save</div><div className="close-popup button" onClick={this.handleCancelColorTile(tileName)}>Cancel</div></>);
+    colorPicker.push(<><div className="close-popup button save" onClick={(e) => (this.handleSaveColorTile(tileName))}>Save</div><div className="close-popup button" onClick={(e) => (this.handleCancelColorTile(tileName, stateName))}>Cancel</div></>);
 
     return colorPicker;
   }
@@ -326,34 +336,99 @@ class ColorPopUp extends React.Component {
 
     var requestURL;
 
+    var userSettings = this.state.userSettings;
+    var currentTheme = this.state.selectedThemeName;
+
     // Get r, g, b, a values from current chosen color
     var rgbaArr = tempChosenColor.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',');
 
+    /*
+     * If it's not working off of a custom theme, we need to make a new one
+     * ( Check to see if current theme exists in user settings )
+     */
+     /*
+     if( this.checkIfCustomTheme() )
+     {
+       // We just need to update the current value of the custom theme and get out
+       fetch("http://localhost:9000/updateUserSettings?r=" + rgbaArr[0] + "&g=" + rgbaArr[1] + "&b=" + rgbaArr[2] +  "&a=" + rgbaArr[3] +  "&colorType=" + tileName + "&currentTheme=" + this.state.selectedThemeName)
+           .then(res => res.text())
+           .then(res => console.log("Res : " + res));
+
+       return;
+     }
+     // If we're working off of a default theme
+     else
+     {
+
+       // First, see how many themes with the word 'custom' there already is
+       var numOfCustom = 0;
+       $.each(userSettings["themes"], function(index, value) {
+
+         if(index.toLowerCase().indexOf("custom") >= 0 )
+         {
+           numOfCustom++;
+         }
+
+       });
+
+
+       // Second, we need to copy the values of the theme to update, update the current value, and pass a custom theme name ("Custom {numOfCustom}")
+       // We just need to update the current value of the custom theme and get out
+       fetch("http://localhost:9000/updateUserSettings?r=" + rgbaArr[0] + "&g=" + rgbaArr[1] + "&b=" + rgbaArr[2] +  "&a=" + rgbaArr[3] +  "&colorType=" + tileName + "&currentTheme=" + this.state.selectedThemeName)
+           .then(res => res.text())
+           .then(res => console.log("Res : " + res));
+
+       console.log("numOfCustom: " + numOfCustom);
+
+     }
+     */
+
+     // Set the theme that we will be updating
+     var themeName = this.state.selectedThemeName;
+
+     // Set the theme that we will be copying values from
+     var themeToCopy = "";
+
+     if( !this.checkIfCustomTheme() )
+     {
+       // First, see how many themes with the word 'custom' there already is
+       var numOfCustom = 0;
+       $.each(userSettings["themes"], function(index, value) {
+
+         if(index.toLowerCase().indexOf("custom") >= 0 )
+         {
+           numOfCustom++;
+         }
+
+       });
+
+       themeName = "Custom-" + numOfCustom;
+       themeToCopy = this.state.selectedThemeName;
+     }
 
     // Update JSON File
-    fetch("http://localhost:9000/updateUserSettings?r=" + rgbaArr[0] + "&g=" + rgbaArr[1] + "&b=" + rgbaArr[2] +  "&a=" + rgbaArr[3] +  "&colorType=" + tileName + "&currentTheme=" + this.state.selectedThemeName)
+
+    fetch("http://localhost:9000/updateUserSettings?r=" + rgbaArr[0] + "&g=" + rgbaArr[1] + "&b=" + rgbaArr[2] +  "&a=" + rgbaArr[3] +  "&colorType=" + tileName + "&currentTheme=" + themeName + "&themeToCopy=" + themeToCopy)
         .then(res => res.text())
         .then(res => console.log("Res : " + res));
 
-    console.log("tempChosenColor2: " + tempChosenColor);
-    console.log("tileName2: " + tileName);
   }
 
 
   /*
    * When 'cancel' is clicked on tile color select
    */
-  handleCancelColorTile(tileName)
+  handleCancelColorTile(colorVarName, tileName)
   {
-    /*
-    var tempChosenColor = this.state.tempChosenColor;
 
-    var requestURL;
+    // Grab the color that is saved in the json file and update css
+    var savedColorValue = this.getCurrentlySetColor(colorVarName);
 
-    // Get r, g, b, a values from current chosen color
-    var rgbaArr = tempChosenColor.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',');
-    */
-    console.log('sweet');
+    var key = '--' + colorVarName;
+
+    // Update Style
+    $('#game-master').get(0).style.setProperty(key, savedColorValue);
+
   }
 
 
@@ -532,7 +607,7 @@ class ColorPopUp extends React.Component {
 
           </section>
 
-          <section>
+          <section className="mobile-column">
             <div className="row heading-wrap">
               <div className="line"></div>
               Layout
@@ -591,15 +666,64 @@ class ColorPopUp extends React.Component {
               </div>
             </div>
 
+            <div className="row">
+              <div className="left-side option center">
+                <Dropdown
+                    options={this.getColorOptions(this.getCurrentlySetColor("keyboard-letter-background"), "keyboard-letter-background", "layoutKeysBackgroundColorValue")}
+                    optionsHoverEffect="false"
+                    default={this.getDefaultColorLayout("keyboard-letter-background", "Keys Background")}
+                    name="key-bg-select"
+                    type="layout"
+                    dontUpdateTopItem="true" // Means this component will handle everything
+                    tileLetter="W"
+                />
+              </div>
+
+              <div className="right-side option center">
+                <Dropdown
+                    options={this.getColorOptions(this.getCurrentlySetColor("letter-selected-row-bg-color"), "letter-selected-row-bg-color", "layoutNavbarBackgroundColorValue")}
+                    optionsHoverEffect="false"
+                    default={this.getDefaultColorLayout("letter-selected-row-bg-color", "Current Row Tile Background")}
+                    name="current-row-select"
+                    type="layout"
+                    dontUpdateTopItem="true" // Means this component will handle everything
+                />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="left-side option center">
+                <Dropdown
+                    options={this.getColorOptions(this.getCurrentlySetColor("letter-bg-color"), "letter-bg-color", "layoutLetterColorValue")}
+                    optionsHoverEffect="false"
+                    default={this.getDefaultColorLayout("letter-bg-color", "Letter Background")}
+                    name="letter-bg-select"
+                    type="layout"
+                    dontUpdateTopItem="true" // Means this component will handle everything
+                />
+              </div>
+
+              <div className="right-side option center">
+                <Dropdown
+                    options={this.getColorOptions(this.getCurrentlySetColor("letter-color-glow"), "letter-color-glow", "layoutGlowBackgroundColorValue")}
+                    optionsHoverEffect="false"
+                    default={this.getDefaultColorLayout("letter-color-glow", "Button / Glow")}
+                    name="glow-bg-select"
+                    type="layout"
+                    dontUpdateTopItem="true" // Means this component will handle everything
+                />
+              </div>
+            </div>
+
 
           </section>
 
 
-          <section>
+          <section className="mobile-column">
 
             <div className="row heading-wrap">
               <div className="line"></div>
-                Text
+                Text:
               <div className="line"></div>
             </div>
 
@@ -607,7 +731,7 @@ class ColorPopUp extends React.Component {
             <div className="row">
               <div className="left-side option center">
                 <div className="title">
-                  Regular Text
+                  Regular Text:
                 </div>
                 <Dropdown
                     options={this.getColorOptions(this.getCurrentlySetColor("text-color"), "text-color", "textRegColorValue")}
@@ -622,7 +746,7 @@ class ColorPopUp extends React.Component {
 
               <div className="right-side option center">
                 <div className="title">
-                  Keyboard
+                  Keyboard:
                 </div>
                 <Dropdown
                     options={this.getColorOptions(this.getCurrentlySetColor("keyboard-text-color"), "keyboard-text-color", "layoutHamburgerBackgroundColorValue")}
@@ -632,6 +756,38 @@ class ColorPopUp extends React.Component {
                     type="layout"
                     dontUpdateTopItem="true" // Means this component will handle everything
                     tileLetter="W"
+                />
+              </div>
+            </div>
+
+
+            <div className="row">
+              <div className="left-side option center">
+                <div className="title">
+                  Game Board:
+                </div>
+                <Dropdown
+                    options={this.getColorOptions(this.getCurrentlySetColor("board-text-color"), "board-text-color", "textBoardColorValue")}
+                    optionsHoverEffect="false"
+                    default={this.getDefaultColorLayout("board-text-color", "")}
+                    name="board-text-select"
+                    type="layout"
+                    dontUpdateTopItem="true" // Means this component will handle everything
+                    tileLetter="W"
+                />
+              </div>
+
+              <div className="right-side option center">
+                <div className="title">
+                  Not In Word:
+                </div>
+                <Dropdown
+                    options={this.getColorOptions(this.getCurrentlySetColor("letter-not-in-word-text-color"), "letter-not-in-word-text-color", "layoutNotInWordColorValue")}
+                    optionsHoverEffect="false"
+                    default={this.getDefaultColorLayout("letter-not-in-word-text-color", "")}
+                    name="not-in-word-text-select"
+                    type="layout"
+                    dontUpdateTopItem="true" // Means this component will handle everything
                 />
               </div>
             </div>

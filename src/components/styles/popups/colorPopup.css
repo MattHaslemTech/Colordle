@@ -77,7 +77,8 @@
 .pop-up-wrap[data-name="color"] .content-wrap .dropdown-wrap[data-type="layout"] .top-item
 {
   height: 100%;
-  text-shadow: 1px 1px 0px #eee, 2px 2px 0px #707070;
+  //text-shadow: 1px 1px 0px #eee, 2px 2px 0px #707070;
+  
 }
 
 .pop-up-wrap[data-name="color"] .content-wrap .dropdown-wrap[data-type="layout"] .title

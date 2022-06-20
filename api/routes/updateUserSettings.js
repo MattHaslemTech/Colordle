@@ -33,23 +33,37 @@ router.get("/", function(req, res, next) {
        * We need to copy all the values of the selected theme into our custom
        * theme and set our selected theme as Custom
        */
-      // Set theme as Custom
-      file.selectedTheme = "Custom";
 
-      // Get currently selected theme
+
+
+
+
+      // Get currently selected theme ( The one whose value we're going to update )
       var currentTheme = req.query.currentTheme;
+
+      // Get the theme to copy
+      var themeToCopy = currentTheme;
+      if(req.query.themeToCopy)
+      {
+        themeToCopy = req.query.themeToCopy;
+      }
+
+      console.log("themeToCopy: " + themeToCopy);
+
       var currentThemeValues;
-      if(defaultThemes[currentTheme])
+      if(defaultThemes[themeToCopy])
       {
         // Copy current
-        currentThemeValues = defaultThemes[currentTheme];
-        file.themes.Custom = currentThemeValues;
+        currentThemeValues = defaultThemes[themeToCopy];
+        file.themes[currentTheme] = currentThemeValues;
 
       }
 
+      // Set theme as Custom
+      file.selectedTheme = currentTheme;
 
-
-      file.themes.Custom[colorType] = colorValue;
+      // Update the value for the theme
+      file.themes[currentTheme][colorType] = colorValue;
 
 
 
