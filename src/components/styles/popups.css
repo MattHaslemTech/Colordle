@@ -35,7 +35,10 @@
   justify-content: flex-start;
   align-items: center;
 
+  position: relative;
+
   padding: 20px;
+  padding-bottom: 0px;
   background: var(--game-bg-color);
 
   border-radius: 8px;
@@ -50,6 +53,7 @@
   box-sizing: border-box;
 
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 
@@ -130,10 +134,30 @@
   border-bottom: solid 1px var(--text-color);
 }
 
+.pop-up-wrap .content-wrap .row.bottom-sticky
+{
+  position: sticky;
+  bottom: -1px;
+  z-index: 99;
+
+  width: 100vw;
+
+  background: var(--game-bg-color);
+
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -7px 13px 0px;
+}
+
 @media only screen and (max-width: 600px) {
   .pop-up-wrap .content-wrap section.mobile-column .row:not(.heading-wrap)
   {
     flex-direction: column;
+  }
+
+  .pop-up-wrap .content-wrap section.mobile-column .options-wrap .row,
+  .pop-up-wrap .content-wrap section.mobile-column .dropdown-wrap .row,
+  .pop-up-wrap .content-wrap section.mobile-column .row.force-row
+  {
+    flex-direction: row;
   }
 
   .pop-up-wrap .content-wrap section.mobile-column .row > *
@@ -142,7 +166,7 @@
     width: 100%;
   }
 
-  .pop-up-wrap .content-wrap section.mobile-column .row > .right-side
+  .pop-up-wrap .content-wrap .row > .stretch
   {
     flex: 2.5;
   }

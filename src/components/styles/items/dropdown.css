@@ -54,7 +54,7 @@
 
 .dropdown-wrap[data-open="true"] .options-wrap
 {
-  max-height: 30vh;
+  max-height: min(500px, 50vh);
 }
 
 .dropdown-wrap[data-open="true"] .top-item

@@ -78,7 +78,7 @@
 {
   height: 100%;
   //text-shadow: 1px 1px 0px #eee, 2px 2px 0px #707070;
-  
+
 }
 
 .pop-up-wrap[data-name="color"] .content-wrap .dropdown-wrap[data-type="layout"] .title
@@ -115,4 +115,37 @@
 .pop-up-wrap[data-name="color"] .content-wrap .dropdown-wrap[data-type="layout"][data-open="true"] .options-wrap
 {
     max-height: none;
+}
+
+
+
+/*
+ * Keyboard section
+ */
+.pop-up-wrap[data-name="color"] .content-wrap .keys-wrap
+{
+  height: 100px;
+  width: min(400px, 100%);
+  margin: 0px auto;
+}
+
+.pop-up-wrap[data-name="color"] .content-wrap .keys-wrap .key
+{
+ display: flex;
+ justify-content: center;
+ align-items: center;
+
+ --size: 4rem;
+ height: 100%;
+ width: var(--size);
+
+ margin: 2px;
+
+ text-transform: uppercase;
+
+ background: var(--keyboard-letter-background);
+ border-radius: 5px;
+
+ color: var(--keyboard-text-color);
+ font-weight: bold;
 }

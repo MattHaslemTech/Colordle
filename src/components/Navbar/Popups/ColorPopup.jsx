@@ -535,9 +535,11 @@ class ColorPopUp extends React.Component {
       <div className="pop-up-wrap open" data-name="color">
         <div className="content-wrap">
           <h1>Edit Colors</h1>
+
+
           <div className="row">
             <div className="title">Theme:</div>
-            <div className="right-side option">
+            <div className="right-side option stretch">
               <Dropdown
                   options={this.state.defaultThemes}
                   optionsHoverEffect="true"
@@ -610,6 +612,59 @@ class ColorPopUp extends React.Component {
           <section className="mobile-column">
             <div className="row heading-wrap">
               <div className="line"></div>
+                Keyboard
+              <div className="line"></div>
+            </div>
+
+            <div className="keys-wrap row force-row">
+              <div className="key">Q</div>
+              <div className="key">W</div>
+              <div className="key">E</div>
+              <div className="key">R</div>
+              <div className="key">T</div>
+              <div className="key">Y</div>
+            </div>
+
+            <div className="row">
+
+              <div className="left-side option center">
+                <div className="title">
+                  Background:
+                </div>
+                <Dropdown
+                    options={this.getColorOptions(this.getCurrentlySetColor("keyboard-letter-background"), "keyboard-letter-background", "layoutKeysBackgroundColorValue")}
+                    optionsHoverEffect="false"
+                    default={this.getDefaultColorLayout("keyboard-letter-background", "")}
+                    name="key-bg-select"
+                    type="layout"
+                    dontUpdateTopItem="true" // Means this component will handle everything
+                    tileLetter="W"
+                />
+              </div>
+
+              <div className="right-side option center">
+                <div className="title">
+                  Text:
+                </div>
+                <Dropdown
+                    options={this.getColorOptions(this.getCurrentlySetColor("keyboard-text-color"), "keyboard-text-color", "layoutHamburgerBackgroundColorValue")}
+                    optionsHoverEffect="false"
+                    default={this.getDefaultColorLayout("keyboard-text-color", "")}
+                    name="keyboard-text-select"
+                    type="layout"
+                    dontUpdateTopItem="true" // Means this component will handle everything
+                    tileLetter="W"
+                />
+              </div>
+
+            </div>
+
+
+          </section>
+
+          <section className="mobile-column">
+            <div className="row heading-wrap">
+              <div className="line"></div>
               Layout
               <div className="line"></div>
             </div>
@@ -666,30 +721,7 @@ class ColorPopUp extends React.Component {
               </div>
             </div>
 
-            <div className="row">
-              <div className="left-side option center">
-                <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("keyboard-letter-background"), "keyboard-letter-background", "layoutKeysBackgroundColorValue")}
-                    optionsHoverEffect="false"
-                    default={this.getDefaultColorLayout("keyboard-letter-background", "Keys Background")}
-                    name="key-bg-select"
-                    type="layout"
-                    dontUpdateTopItem="true" // Means this component will handle everything
-                    tileLetter="W"
-                />
-              </div>
 
-              <div className="right-side option center">
-                <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("letter-selected-row-bg-color"), "letter-selected-row-bg-color", "layoutNavbarBackgroundColorValue")}
-                    optionsHoverEffect="false"
-                    default={this.getDefaultColorLayout("letter-selected-row-bg-color", "Current Row Tile Background")}
-                    name="current-row-select"
-                    type="layout"
-                    dontUpdateTopItem="true" // Means this component will handle everything
-                />
-              </div>
-            </div>
 
             <div className="row">
               <div className="left-side option center">
@@ -716,6 +748,21 @@ class ColorPopUp extends React.Component {
             </div>
 
 
+            <div className="row">
+
+              <div className="right-side option center">
+                <Dropdown
+                    options={this.getColorOptions(this.getCurrentlySetColor("letter-selected-row-bg-color"), "letter-selected-row-bg-color", "layoutNavbarBackgroundColorValue")}
+                    optionsHoverEffect="false"
+                    default={this.getDefaultColorLayout("letter-selected-row-bg-color", "Current Row Tile Background")}
+                    name="current-row-select"
+                    type="layout"
+                    dontUpdateTopItem="true" // Means this component will handle everything
+                />
+              </div>
+            </div>
+
+
           </section>
 
 
@@ -725,39 +772,6 @@ class ColorPopUp extends React.Component {
               <div className="line"></div>
                 Text:
               <div className="line"></div>
-            </div>
-
-
-            <div className="row">
-              <div className="left-side option center">
-                <div className="title">
-                  Regular Text:
-                </div>
-                <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("text-color"), "text-color", "textRegColorValue")}
-                    optionsHoverEffect="false"
-                    default={this.getDefaultColorLayout("text-color", "")}
-                    name="text-select"
-                    type="layout"
-                    dontUpdateTopItem="true" // Means this component will handle everything
-                    tileLetter="W"
-                />
-              </div>
-
-              <div className="right-side option center">
-                <div className="title">
-                  Keyboard:
-                </div>
-                <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("keyboard-text-color"), "keyboard-text-color", "layoutHamburgerBackgroundColorValue")}
-                    optionsHoverEffect="false"
-                    default={this.getDefaultColorLayout("keyboard-text-color", "")}
-                    name="keyboard-text-select"
-                    type="layout"
-                    dontUpdateTopItem="true" // Means this component will handle everything
-                    tileLetter="W"
-                />
-              </div>
             </div>
 
 
@@ -792,11 +806,30 @@ class ColorPopUp extends React.Component {
               </div>
             </div>
 
+            <div className="row">
+              <div className="left-side option center">
+                <div className="title">
+                  Regular Text:
+                </div>
+                <Dropdown
+                    options={this.getColorOptions(this.getCurrentlySetColor("text-color"), "text-color", "textRegColorValue")}
+                    optionsHoverEffect="false"
+                    default={this.getDefaultColorLayout("text-color", "")}
+                    name="text-select"
+                    type="layout"
+                    dontUpdateTopItem="true" // Means this component will handle everything
+                    tileLetter="W"
+                />
+              </div>
+
+            </div>
+
+
           </section>
 
 
 
-          <div className="row center buttons">
+          <div className="row center buttons bottom-sticky">
             <div className="close-popup button save" onClick={this.handleSave}>
               Save {this.state.apiResponse}
             </div>

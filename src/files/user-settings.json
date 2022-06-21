@@ -1,6 +1,6 @@
 {
   "id": "Sweet",
-  "selectedTheme": "Custom-6",
+  "selectedTheme": "Custom-8",
   "themes": {
     "Custom": {
       "game-bg-color": "rgba(31,41,55,1)",
@@ -116,6 +116,40 @@
       "letter-selected-row-bg-color": "rgba(194, 192, 192,1)",
       "letter-bg-color": "rgba(210,150,214,1)",
       "letter-color-glow": "rgba(3,79,230,1)",
+      "letter-correct-spot-bg-color": "rgba(83,141,78, 1)",
+      "letter-bg-in-word-color": "rgba(181,159,59, 1)",
+      "letter-not-in-word-text-color": "rgba(171, 171, 171, 1)",
+      "not-in-dictionary-bg-color": "rgba(225, 29, 72, 1)"
+    },
+    "Custom-7": {
+      "game-bg-color": "rgba(31,41,55,1)",
+      "navbar-bg-color": "rgba(17,24,39, 1)",
+      "menu-bg-color": "rgba(70,58,214,1)",
+      "hamburger-open-bg-color": "rgba(107, 114, 128, 1)",
+      "text-color": "rgba(255, 255, 255, 1)",
+      "keyboard-text-color": "rgba(255,255,255,1)",
+      "board-text-color": "rgba(255, 255, 255, 1)",
+      "keyboard-letter-background": "rgba(37,97,218,1)",
+      "letter-selected-row-bg-color": "rgba(107, 114, 128, 1)",
+      "letter-bg-color": "rgba(17,24,39, 1)",
+      "letter-color-glow": "rgba(24,78,99, 1)",
+      "letter-correct-spot-bg-color": "rgba(83,141,78, 1)",
+      "letter-bg-in-word-color": "rgba(181,159,59, 1)",
+      "letter-not-in-word-text-color": "rgba(171, 171, 171, 1)",
+      "not-in-dictionary-bg-color": "rgba(225, 29, 72, 1)"
+    },
+    "Custom-8": {
+      "game-bg-color": "rgba(31,41,55,1)",
+      "navbar-bg-color": "rgba(17,24,39, 1)",
+      "menu-bg-color": "rgba(70,58,214,1)",
+      "hamburger-open-bg-color": "rgba(107, 114, 128, 1)",
+      "text-color": "rgba(255, 255, 255, 1)",
+      "keyboard-text-color": "rgba(255,255,255,1)",
+      "board-text-color": "rgba(255, 255, 255, 1)",
+      "keyboard-letter-background": "rgba(37,97,218,1)",
+      "letter-selected-row-bg-color": "rgba(107, 114, 128, 1)",
+      "letter-bg-color": "rgba(17,24,39, 1)",
+      "letter-color-glow": "rgba(24,78,99, 1)",
       "letter-correct-spot-bg-color": "rgba(83,141,78, 1)",
       "letter-bg-in-word-color": "rgba(181,159,59, 1)",
       "letter-not-in-word-text-color": "rgba(171, 171, 171, 1)",
