@@ -5,6 +5,7 @@ import Keyboard from "./Keyboard";
 import Board from "./Board";
 import Message from "./Message";
 import Navbar from "./Navbar/Navbar";
+import LoadingScreen from "./Items/LoadingScreen";
 
 import './styles/game.css';
 import raw from '../files/wordle-dictionary.txt';
@@ -287,6 +288,8 @@ class Game extends React.Component {
       <div id="game-master">
         <Navbar />
         <div className="all-content-wrap">
+
+          <LoadingScreen />
 
           <Message message={this.state.error} />
           <Board  maxLetters={this.state.maxLetters}

@@ -80,9 +80,10 @@ router.get("/", function(req, res, next) {
 
     fs.writeFile(fileName, JSON.stringify(file, null, 2), function writeJSON(err) {
     if (err) return console.log(err);
-      //console.log(JSON.stringify(file));
-      //console.log('writing to ' + fileName);
-      console.log("colorValue: " + req.query.colorvalue);
+
+      // Send a message so we know we did our job
+      res.send('awesome');
+
     });
 
 

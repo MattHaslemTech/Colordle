@@ -122,15 +122,17 @@ class ThemesPopUp extends React.Component {
     // If it's the current theme, don't do anything
     if(isCurrentTheme)
     {
-      console.log('Is current');
       return;
     }
     else
     {
+      // Open the loader
+      this.handleLoader('open');
+
       // Update JSON File
       fetch("http://localhost:9000/updateUserSettings?theme=" + themeName + "&saveTheme=true")
-          .then(res => res.text())
-          .then(res => this.setState({ apiResponse: res }));
+          .then(res => this.setState({ apiResponse: res }))
+          .then(res => this.handleLoader('close'));
     }
   }
 
@@ -144,24 +146,43 @@ class ThemesPopUp extends React.Component {
   }
 
 
+  /*
+   * Show/Hide the loader wrap
+   */
+  handleLoader(openOrClose)
+  {
+    if(openOrClose == 'open')
+    {
+      $('.loading-screen-wrap').addClass('open')
+    }
+    if(openOrClose == 'close')
+    {
+      $('.loading-screen-wrap').removeClass('open')
+    }
+
+  }
+
+
   render(){
     return(
-      <div className="pop-up-wrap open" data-name="manageThemes">
-        <div className="content-wrap">
-          <h1>My Themes</h1>
+      <>
+        <div className="pop-up-wrap open" data-name="manageThemes">
+          <div className="content-wrap">
+            <h1>My Themes</h1>
 
-          {this.state.themes}
+            {this.state.themes}
 
-          <div className="row center buttons bottom-sticky">
+            <div className="row center buttons bottom-sticky">
 
-            <div className="close-popup button" onClick={this.handleCancel}>
-              Close
+              <div className="close-popup button" onClick={this.handleCancel}>
+                Close
+              </div>
+
             </div>
 
           </div>
-
         </div>
-      </div>
+      </>
     )
   }
 }
