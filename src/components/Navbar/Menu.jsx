@@ -3,6 +3,7 @@ import React from 'react';
 import $ from 'jquery';
 
 import ColorPopUp from './Popups/ColorPopup';
+import ThemesPopUp from './Popups/ManageThemes';
 
 import '../styles/menu.css';
 import colorWheel from './icons/color-wheel.png';
@@ -17,7 +18,6 @@ class Menu extends React.Component
 
   openPopUp(e) {
     var popup = e.target.getAttribute("data-popup");
-    console.log(popup);
     $('.pop-up-wrap[data-name="' + popup + '"]').addClass('open');
   }
 
@@ -40,10 +40,14 @@ class Menu extends React.Component
             <Stats />
             My Stats
           </div>
+          <div className="item open-popup" onClick={this.openPopUp} data-popup="manageThemes">
+            <img className="icon" src={colorWheel} />Manage Themes
+          </div>
 
         </div>
 
         <ColorPopUp />
+        <ThemesPopUp />
       </>
     )
   }

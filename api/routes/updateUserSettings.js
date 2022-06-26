@@ -16,6 +16,18 @@ router.get("/", function(req, res, next) {
       file.selectedTheme = req.query.theme;
     }
 
+    // If they clicked 'save' on the popup -> set previousTheme
+    if(req.query.saveTheme == "true")
+    {
+      file.previousTheme = req.query.theme;
+    }
+
+    // If they clicked 'cancel' on the popup -> set selectedTheme
+    if(req.query.cancel == "true")
+    {
+      file.selectedTheme = req.query.theme;
+    }
+
     /*
      * Save the new color value
      *
@@ -33,11 +45,6 @@ router.get("/", function(req, res, next) {
        * We need to copy all the values of the selected theme into our custom
        * theme and set our selected theme as Custom
        */
-
-
-
-
-
       // Get currently selected theme ( The one whose value we're going to update )
       var currentTheme = req.query.currentTheme;
 
@@ -48,7 +55,6 @@ router.get("/", function(req, res, next) {
         themeToCopy = req.query.themeToCopy;
       }
 
-      console.log("themeToCopy: " + themeToCopy);
 
       var currentThemeValues;
       if(defaultThemes[themeToCopy])
@@ -70,7 +76,6 @@ router.get("/", function(req, res, next) {
 
     }
 
-    console.log("SWEEETTTT");
     console.log(req.query);
 
     fs.writeFile(fileName, JSON.stringify(file, null, 2), function writeJSON(err) {

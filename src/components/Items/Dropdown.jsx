@@ -4,6 +4,7 @@ import {createRoot} from 'react-dom/client';
 import $ from 'jquery';
 
 import '../styles/items/dropdown.css';
+import '../styles/items/color-box.css';
 
 import DownTriangle from './icons/DownTriangle';
 
@@ -33,6 +34,7 @@ class Dropdown extends React.Component
    * When props are changed, update the dropdown (used to reset dropdown when 'cancel' is pressed)
    */
   componentDidUpdate(prevProps) {
+    /*
     // Typical usage (don't forget to compare props):
     if (this.props.default !== prevProps.default) {
       this.setState({selected: this.props.default});
@@ -42,10 +44,13 @@ class Dropdown extends React.Component
 
       var selectedItemHtml = this.props.default;
 
-      const rootElement = document.getElementById('top-' + this.props.name);
-      const root = createRoot(rootElement);
+      var rootElement = document.getElementById('top-' + this.props.name);
+      var root = createRoot(rootElement);
       root.render(selectedItemHtml);
 
+    }
+    */
+    if (this.props.default !== prevProps.default) {
     }
   }
 

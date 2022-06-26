@@ -1,0 +1,31 @@
+.pop-up-wrap[data-name="manageThemes"] .item .button
+{
+  flex:none;
+  width: auto;
+}
+
+.pop-up-wrap[data-name="manageThemes"] .item .button:not(:last-child)
+{
+  margin-right: 10px;
+}
+
+
+
+.pop-up-wrap[data-name="manageThemes"] .item .button.delete
+{
+  background: var(--not-in-dictionary-bg-color);
+}
+
+
+.pop-up-wrap[data-name="manageThemes"] .item .colors-wrap
+{
+  flex:2;
+  margin-right: 20px;
+}
+
+
+.pop-up-wrap[data-name="manageThemes"] .item .button[data-disabled="true"]
+{
+  opacity: 0.5;
+  cursor: auto;
+}

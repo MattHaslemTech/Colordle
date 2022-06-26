@@ -13,7 +13,6 @@ import '../../styles/popups/colorPopup.css';
 import '../../styles/items/dropdown.css';
 import '../../styles/items/buttons.css';
 
-const LETTERS = ['A']
 
 class ColorPopUp extends React.Component {
 
@@ -28,7 +27,7 @@ class ColorPopUp extends React.Component {
       customThemes: this.customThemeDropdownBuilder(),
       selectedTheme: this.setSelectedTheme(),
       selectedThemeName: "",
-      savedThemeName: require('../../../files/user-settings.json')["selectedTheme"],
+      savedThemeName: require('../../../files/user-settings.json')["previousTheme"],
       apiResponse: "",
 
       tileCorrectSpotColorValue: this.getCurrentlySetColor("letter-correct-spot-bg-color"),
@@ -332,6 +331,8 @@ class ColorPopUp extends React.Component {
    */
   handleSaveColorTile(tileName)
   {
+
+    console.log("tileName: " + tileName);
     var tempChosenColor = this.state.tempChosenColor;
 
     var requestURL;
@@ -404,6 +405,9 @@ class ColorPopUp extends React.Component {
 
        themeName = "Custom-" + numOfCustom;
        themeToCopy = this.state.selectedThemeName;
+
+       // Set the state so we know what custom theme has been created (so we can delete it later)
+       this.setState({createdTheme: themeName});
      }
 
     // Update JSON File
@@ -480,7 +484,7 @@ class ColorPopUp extends React.Component {
   {
 
     // Update JSON File
-    fetch("http://localhost:9000/updateUserSettings?theme=" + this.state.selectedThemeName)
+    fetch("http://localhost:9000/updateUserSettings?theme=" + this.state.selectedThemeName + "&saveTheme=true")
         .then(res => res.text())
         .then(res => this.setState({ apiResponse: res }));
 
@@ -501,10 +505,22 @@ class ColorPopUp extends React.Component {
     // Reset theme
     this.updateTheme(this.state.savedThemeName);
 
+    // We need to reset the selected theme in the JSON file
+    // Update JSON File
+    fetch("http://localhost:9000/updateUserSettings?theme=" + this.state.savedThemeName + "&cancel=true")
+        .then(res => res.text())
+        .then(res => this.setState({ apiResponse: res }));
+
+
     // Reset selected Theme state
     var selectedTheme = this.setSelectedTheme();
     this.setState({selectedTheme: selectedTheme});
     this.setState({selectedThemeName: this.state.savedThemeName});
+
+    // We need to delete the custom theme created after the user updated color values
+    fetch("http://localhost:9000/deleteTheme?theme=")
+        .then(res => res.text())
+        .then(res => this.setState({ apiResponse: res }));
 
     window.closePopUp();
   }
@@ -532,7 +548,7 @@ class ColorPopUp extends React.Component {
 
 
     return(
-      <div className="pop-up-wrap open" data-name="color">
+      <div className="pop-up-wrap" data-name="color">
         <div className="content-wrap">
           <h1>Edit Colors</h1>
 
@@ -833,7 +849,7 @@ class ColorPopUp extends React.Component {
             <div className="close-popup button save" onClick={this.handleSave}>
               Save {this.state.apiResponse}
             </div>
-            <div className="close-popup button" onClick={this.handleCancel}>
+            <div className="close-popup button" onClick={() => {this.handleCancel()}}>
               Cancel
             </div>
           </div>
