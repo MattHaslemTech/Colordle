@@ -39,6 +39,12 @@ class Game extends React.Component {
     }
   }
 
+
+  componentDidMount()
+  {
+    this.setInitialTheme();
+  }
+
   /*
    * Update letters on board from keyboard interaction
    */
@@ -277,6 +283,47 @@ class Game extends React.Component {
       return false;
     }
   }
+
+
+
+  /*
+   * Set initial theme that's set in user-settings
+   */
+   setInitialTheme()
+   {
+     var defaultThemes = require('../files/themes.json');
+
+     var userSettings = require('../files/user-settings.json');
+     var selectedThemeName = userSettings["selectedTheme"];
+
+     var customThemes = userSettings["themes"];
+
+     // If it's in default theme file
+     var selectedTheme = [];
+     if(defaultThemes[selectedThemeName])
+     {
+       selectedTheme = defaultThemes[selectedThemeName];
+     }
+     // If it's in custom theme file
+     if(customThemes[selectedThemeName])
+     {
+       selectedTheme = customThemes[selectedThemeName];
+     }
+
+     /*
+      * Grab Values from the given theme
+      */
+      var themeColors = selectedTheme;
+      for(var key in themeColors)
+      {
+        var value = themeColors[key];
+
+        // Set the colors from the theme
+        key = "--" + key;
+        $('#game-master').get(0).style.setProperty(key, value);
+      }
+
+   }
 
 
 

@@ -10,7 +10,6 @@ router.get("/", function(req, res, next) {
 
     // Get the name of the theme we want to delete
     let themeName = req.query.theme;
-    console.log("themeName: " + themeName);
 
     // Go through the file and delete it
     var data = fs.readFileSync(fileName);
@@ -24,8 +23,10 @@ router.get("/", function(req, res, next) {
 
     fs.writeFile(fileName, JSON.stringify(file, null, 2), function writeJSON(err) {
       if (err) return console.log(err);
-      //console.log(JSON.stringify(file));
-      //console.log('writing to ' + fileName);
+
+      // Send a message so we know we did our job
+      res.send('awesome');
+
     });
 
 

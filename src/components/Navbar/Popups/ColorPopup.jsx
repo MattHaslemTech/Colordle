@@ -332,7 +332,6 @@ class ColorPopUp extends React.Component {
   handleSaveColorTile(tileName)
   {
 
-    console.log("tileName: " + tileName);
     var tempChosenColor = this.state.tempChosenColor;
 
     var requestURL;
@@ -346,42 +345,6 @@ class ColorPopUp extends React.Component {
     /*
      * If it's not working off of a custom theme, we need to make a new one
      * ( Check to see if current theme exists in user settings )
-     */
-     /*
-     if( this.checkIfCustomTheme() )
-     {
-       // We just need to update the current value of the custom theme and get out
-       fetch("http://localhost:9000/updateUserSettings?r=" + rgbaArr[0] + "&g=" + rgbaArr[1] + "&b=" + rgbaArr[2] +  "&a=" + rgbaArr[3] +  "&colorType=" + tileName + "&currentTheme=" + this.state.selectedThemeName)
-           .then(res => res.text())
-           .then(res => console.log("Res : " + res));
-
-       return;
-     }
-     // If we're working off of a default theme
-     else
-     {
-
-       // First, see how many themes with the word 'custom' there already is
-       var numOfCustom = 0;
-       $.each(userSettings["themes"], function(index, value) {
-
-         if(index.toLowerCase().indexOf("custom") >= 0 )
-         {
-           numOfCustom++;
-         }
-
-       });
-
-
-       // Second, we need to copy the values of the theme to update, update the current value, and pass a custom theme name ("Custom {numOfCustom}")
-       // We just need to update the current value of the custom theme and get out
-       fetch("http://localhost:9000/updateUserSettings?r=" + rgbaArr[0] + "&g=" + rgbaArr[1] + "&b=" + rgbaArr[2] +  "&a=" + rgbaArr[3] +  "&colorType=" + tileName + "&currentTheme=" + this.state.selectedThemeName)
-           .then(res => res.text())
-           .then(res => console.log("Res : " + res));
-
-       console.log("numOfCustom: " + numOfCustom);
-
-     }
      */
 
      // Set the theme that we will be updating
@@ -486,7 +449,6 @@ class ColorPopUp extends React.Component {
     // Update JSON File
     fetch("http://localhost:9000/updateUserSettings?theme=" + this.state.selectedThemeName + "&saveTheme=true")
         .then(res => res.text())
-        .then(res => this.setState({ apiResponse: res }));
 
     // Update saved theme
     this.setState({savedThemeName: this.state.selectedThemeName});
@@ -509,7 +471,6 @@ class ColorPopUp extends React.Component {
     // Update JSON File
     fetch("http://localhost:9000/updateUserSettings?theme=" + this.state.savedThemeName + "&cancel=true")
         .then(res => res.text())
-        .then(res => this.setState({ apiResponse: res }));
 
 
     // Reset selected Theme state
@@ -520,10 +481,21 @@ class ColorPopUp extends React.Component {
     // We need to delete the custom theme created after the user updated color values
     fetch("http://localhost:9000/deleteTheme?theme=")
         .then(res => res.text())
-        .then(res => this.setState({ apiResponse: res }));
 
-    window.closePopUp();
+    //window.closePopUp();
+    this.closePopup();
   }
+
+
+  /*
+   * Close Popup when 'close' is clicked
+   */
+  closePopup = () => {
+
+    //window.closePopUp();
+    this.props.closePopup();
+  }
+
 
 
 
@@ -548,8 +520,7 @@ class ColorPopUp extends React.Component {
 
 
     return(
-      <div className="pop-up-wrap" data-name="color">
-        <div className="content-wrap">
+      <>
           <h1>Edit Colors</h1>
 
 
@@ -856,8 +827,7 @@ class ColorPopUp extends React.Component {
 
 
 
-        </div>
-      </div>
+      </>
     )
   }
 }

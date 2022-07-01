@@ -104,11 +104,12 @@ class ThemesPopUp extends React.Component {
      }
      else
      {
-       console.log("Delete Theme: " + themeName);
-       this.setState({test: themeName});
+       // Open the loader
+       this.handleLoader('open');
+
        fetch("http://localhost:9000/deleteTheme?theme=" + themeName)
            .then(res => res.text())
-           .then(res => this.setState({ apiResponse: res }));
+           .then(res => this.handleLoader('close'));
      }
 
    }
@@ -131,7 +132,6 @@ class ThemesPopUp extends React.Component {
 
       // Update JSON File
       fetch("http://localhost:9000/updateUserSettings?theme=" + themeName + "&saveTheme=true")
-          .then(res => this.setState({ apiResponse: res }))
           .then(res => this.handleLoader('close'));
     }
   }
@@ -140,9 +140,10 @@ class ThemesPopUp extends React.Component {
   /*
    * Close Popup when 'close' is clicked
    */
-  handleCancel()
-  {
-    window.closePopUp();
+  handleCancel = () => {
+
+    //window.closePopUp();
+    this.props.closePopup();
   }
 
 
@@ -166,8 +167,7 @@ class ThemesPopUp extends React.Component {
   render(){
     return(
       <>
-        <div className="pop-up-wrap open" data-name="manageThemes">
-          <div className="content-wrap">
+
             <h1>My Themes</h1>
 
             {this.state.themes}
@@ -180,8 +180,6 @@ class ThemesPopUp extends React.Component {
 
             </div>
 
-          </div>
-        </div>
       </>
     )
   }

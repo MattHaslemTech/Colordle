@@ -2,6 +2,7 @@ import React from 'react';
 
 import $ from 'jquery';
 
+import PopUp from './Popups/Popup';
 import ColorPopUp from './Popups/ColorPopup';
 import ThemesPopUp from './Popups/ManageThemes';
 
@@ -14,16 +15,30 @@ class Menu extends React.Component
   constructor(props)
   {
     super(props);
+
+    this.state = {
+      popupName: "",
+      popupOpen: false,
+    }
+
+    this.openPopUp = this.openPopUp.bind(this);
   }
 
   openPopUp(e) {
-    var popup = e.target.getAttribute("data-popup");
-    $('.pop-up-wrap[data-name="' + popup + '"]').addClass('open');
+    //var popup = e.target.getAttribute("data-popup");
+
+    //$('.pop-up-wrap[data-name="' + popup + '"]').addClass('open');
+    var popupName = e.target.getAttribute("data-popup");
+
+    this.setState({popupOpen: true, popupName: popupName});
+
   }
 
   closePopup()
   {
     $('.pop-up-wrap.open').removeClass('open');
+
+    this.setState({popupOpen: false});
   }
 
   render(){
@@ -46,8 +61,9 @@ class Menu extends React.Component
 
         </div>
 
-        <ColorPopUp />
-        <ThemesPopUp />
+
+
+        <PopUp open={this.state.popupOpen} popupName={this.state.popupName} closePopup={(e) => this.closePopup()} />
       </>
     )
   }
