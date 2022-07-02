@@ -76,7 +76,9 @@ router.get("/", function(req, res, next) {
 
     }
 
-    console.log(req.query);
+    //console.log(req.query);
+    console.log("env " + process.env.ENV);
+    console.log("NODE_ENV '" + process.env.NODE_ENV + "'");
 
     fs.writeFile(fileName, JSON.stringify(file, null, 2), function writeJSON(err) {
     if (err) return console.log(err);

@@ -30,6 +30,8 @@ app.use("/updateUserSettings", updateUserSettings);
 app.use("/deleteTheme", deleteTheme);
 
 
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
