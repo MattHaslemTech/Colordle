@@ -29,6 +29,7 @@ class ColorPopUp extends React.Component {
       selectedThemeName: "",
       savedThemeName: require('../../../files/user-settings.json')["previousTheme"],
       apiResponse: "",
+      themeToSave: this.getCurrentThemeValues(),
 
       tileCorrectSpotColorValue: this.getCurrentlySetColor("letter-correct-spot-bg-color"),
       tileWrongSpotColorValue: this.getCurrentlySetColor("letter-bg-in-word-color"),
@@ -117,7 +118,35 @@ class ColorPopUp extends React.Component {
   }
 
   /*
-   * Set default Themes
+   * Get the color values in the initially saved theme
+   */
+  getCurrentThemeValues = () => {
+    // Get the selected theme from the user-settings file
+    var userSettings = require('../../../files/user-settings.json');
+    var selectedThemeName = userSettings["selectedTheme"];
+
+    var customThemes = userSettings["themes"];
+    var defaultThemes = require('../../../files/themes.json');
+
+    // If it's in default theme file
+    var result;
+    if(defaultThemes[selectedThemeName])
+    {
+      result = defaultThemes[selectedThemeName];
+    }
+    // If it's in custom theme file
+    if(customThemes[selectedThemeName])
+    {
+      result = customThemes[selectedThemeName];
+    }
+
+    return result;
+  }
+
+
+
+  /*
+   * Set  Themes for the theme selector
    */
   themeDropdownBuilder()
   {
@@ -196,6 +225,8 @@ class ColorPopUp extends React.Component {
 
     return results;
   }
+
+
 
   /*
    * Get currently set items
@@ -299,7 +330,7 @@ class ColorPopUp extends React.Component {
   /*
    * Set the color picker and save/cancel buttons for tile dropdown
    */
-  getColorOptions(colorValue, tileName, stateName)
+  buildColorOptions(colorValue, tileName, stateName)
   {
 
     // Get default color
@@ -339,14 +370,56 @@ class ColorPopUp extends React.Component {
     var userSettings = this.state.userSettings;
     var currentTheme = this.state.selectedThemeName;
 
+    // If color hasn't changed, don't worry about it
+    if(!tempChosenColor)
+    {
+      return;
+    }
+
+    /*
+     * Update the state that's holding the values we want to save.
+     */
+    var themeToUpdate = this.state.themeToSave;
+
+    themeToUpdate[tileName] = tempChosenColor;
+
+    this.setState({themeToSave: themeToUpdate});
+
+    /*
+     * Update theme name to save
+     */
+    if( !this.checkIfCustomTheme() )
+    {
+      // First, see how many themes with the word 'custom' there already is
+      var numOfCustom = 1;
+      $.each(userSettings["themes"], function(index, value) {
+        console.log(index);
+        if(index.toLowerCase().indexOf("custom") >= 0 )
+        {
+          console.log("true");
+          numOfCustom++;
+        }
+
+      });
+
+      var themeName = "Custom-" + numOfCustom;
+
+      console.log("Theme Name: " + themeName);
+
+      // Set the state so we know what custom theme has been created (so we can save or delete it later)
+      this.setState({themeNameToSave: themeName});
+    }
+
     // Get r, g, b, a values from current chosen color
-    var rgbaArr = tempChosenColor.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',');
+    //var rgbaArr = tempChosenColor.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',');
+
+
 
     /*
      * If it's not working off of a custom theme, we need to make a new one
      * ( Check to see if current theme exists in user settings )
      */
-
+     /*
      // Set the theme that we will be updating
      var themeName = this.state.selectedThemeName;
 
@@ -373,12 +446,15 @@ class ColorPopUp extends React.Component {
        this.setState({createdTheme: themeName});
      }
 
-    // Update JSON File
+     console.log('themeName = ' + themeName);
+     */
 
+    // Update JSON File
+    /*
     fetch("http://localhost:9000/updateUserSettings?r=" + rgbaArr[0] + "&g=" + rgbaArr[1] + "&b=" + rgbaArr[2] +  "&a=" + rgbaArr[3] +  "&colorType=" + tileName + "&currentTheme=" + themeName + "&themeToCopy=" + themeToCopy)
         .then(res => res.text())
         .then(res => console.log("Res : " + res));
-
+    */
   }
 
 
@@ -443,18 +519,36 @@ class ColorPopUp extends React.Component {
   /*
    * Handle API call when the User clicks 'Save'
    */
-  handleSave(themeName)
+  handleSave(themeName2)
   {
+    let themeName = this.state.themeNameToSave;
 
-    // Update JSON File
-    fetch("http://localhost:9000/updateUserSettings?theme=" + this.state.selectedThemeName + "&saveTheme=true")
+    // Save theme name in json
+    fetch("http://localhost:9000/updateUserSettings?theme=" + this.state.themeNameToSave + "&saveTheme=true")
         .then(res => res.text())
+    this.setState({savedThemeName: themeName});
 
-    // Update saved theme
-    this.setState({savedThemeName: this.state.selectedThemeName});
+    // Update saved theme values
+    let themeValuesToSave = this.state.themeToSave;
+    var tempRgbaArr = [];
+    var tempChosenColor = "";
+    $.each(themeValuesToSave, (index, value) => {
+      console.log("index -> " + index + "; value -> " + value);
+      tempRgbaArr = value.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',')
+
+      // Update values
+      fetch("http://localhost:9000/updateUserSettings?r=" + tempRgbaArr[0] + "&g=" + tempRgbaArr[1] + "&b=" + tempRgbaArr[2] +  "&a=" + tempRgbaArr[3] +  "&colorType=" + index + "&currentTheme=" + themeName)
+          .then(res => res.text())
+          .then(res => console.log("Res : " + res));
+
+    });
+
+
+
+
 
     // Close pop-up
-    window.closePopUp();
+    this.props.closePopup();
   }
 
 
@@ -552,7 +646,7 @@ class ColorPopUp extends React.Component {
               </div>
               <div className="right-side option center">
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("letter-correct-spot-bg-color"), "letter-correct-spot-bg-color", "tileCorrectSpotColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("letter-correct-spot-bg-color"), "letter-correct-spot-bg-color", "tileCorrectSpotColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorTile("letter-correct-spot-bg-color", "Q")}
                     name="correct-letter-select"
@@ -567,7 +661,7 @@ class ColorPopUp extends React.Component {
               <div className="title center">Wrong Spot:</div>
               <div className="right-side option center">
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("letter-bg-in-word-color"), "letter-bg-in-word-color", "tileWrongSpotColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("letter-bg-in-word-color"), "letter-bg-in-word-color", "tileWrongSpotColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorTile("letter-bg-in-word-color", "W")}
                     name="wrong-letter-select"
@@ -583,7 +677,7 @@ class ColorPopUp extends React.Component {
               <div className="title center">Invalid Word:</div>
               <div className="right-side option center">
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("not-in-dictionary-bg-color"), "not-in-dictionary-bg-color", "tileIncorrectWordColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("not-in-dictionary-bg-color"), "not-in-dictionary-bg-color", "tileIncorrectWordColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorTile("not-in-dictionary-bg-color", "E")}
                     name="wrong-word-select"
@@ -619,7 +713,7 @@ class ColorPopUp extends React.Component {
                   Background:
                 </div>
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("keyboard-letter-background"), "keyboard-letter-background", "layoutKeysBackgroundColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("keyboard-letter-background"), "keyboard-letter-background", "layoutKeysBackgroundColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorLayout("keyboard-letter-background", "")}
                     name="key-bg-select"
@@ -634,7 +728,7 @@ class ColorPopUp extends React.Component {
                   Text:
                 </div>
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("keyboard-text-color"), "keyboard-text-color", "layoutHamburgerBackgroundColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("keyboard-text-color"), "keyboard-text-color", "layoutHamburgerBackgroundColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorLayout("keyboard-text-color", "")}
                     name="keyboard-text-select"
@@ -659,7 +753,7 @@ class ColorPopUp extends React.Component {
             <div className="row">
               <div className="left-side option center">
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("game-bg-color"), "game-bg-color", "layoutBackgroundColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("game-bg-color"), "game-bg-color", "layoutBackgroundColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorLayout("game-bg-color", "Background")}
                     name="background-select"
@@ -671,7 +765,7 @@ class ColorPopUp extends React.Component {
 
               <div className="right-side option center">
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("navbar-bg-color"), "navbar-bg-color", "layoutNavbarBackgroundColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("navbar-bg-color"), "navbar-bg-color", "layoutNavbarBackgroundColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorLayout("navbar-bg-color", "Navbar")}
                     name="navbar-select"
@@ -685,7 +779,7 @@ class ColorPopUp extends React.Component {
             <div className="row">
               <div className="left-side option center">
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("menu-bg-color"), "menu-bg-color", "layoutMenuColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("menu-bg-color"), "menu-bg-color", "layoutMenuColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorLayout("menu-bg-color", "Menu")}
                     name="menu-bg-select"
@@ -697,7 +791,7 @@ class ColorPopUp extends React.Component {
 
               <div className="right-side option center">
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("hamburger-open-bg-color"), "hamburger-open-bg-color", "layoutHamburgerBackgroundColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("hamburger-open-bg-color"), "hamburger-open-bg-color", "layoutHamburgerBackgroundColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorLayout("hamburger-open-bg-color", "Menu Button")}
                     name="hamburger-bg-select"
@@ -713,7 +807,7 @@ class ColorPopUp extends React.Component {
             <div className="row">
               <div className="left-side option center">
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("letter-bg-color"), "letter-bg-color", "layoutLetterColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("letter-bg-color"), "letter-bg-color", "layoutLetterColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorLayout("letter-bg-color", "Letter Background")}
                     name="letter-bg-select"
@@ -724,7 +818,7 @@ class ColorPopUp extends React.Component {
 
               <div className="right-side option center">
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("letter-color-glow"), "letter-color-glow", "layoutGlowBackgroundColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("letter-color-glow"), "letter-color-glow", "layoutGlowBackgroundColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorLayout("letter-color-glow", "Button / Glow")}
                     name="glow-bg-select"
@@ -739,7 +833,7 @@ class ColorPopUp extends React.Component {
 
               <div className="right-side option center">
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("letter-selected-row-bg-color"), "letter-selected-row-bg-color", "layoutNavbarBackgroundColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("letter-selected-row-bg-color"), "letter-selected-row-bg-color", "layoutNavbarBackgroundColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorLayout("letter-selected-row-bg-color", "Current Row Tile Background")}
                     name="current-row-select"
@@ -768,7 +862,7 @@ class ColorPopUp extends React.Component {
                   Game Board:
                 </div>
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("board-text-color"), "board-text-color", "textBoardColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("board-text-color"), "board-text-color", "textBoardColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorLayout("board-text-color", "")}
                     name="board-text-select"
@@ -783,7 +877,7 @@ class ColorPopUp extends React.Component {
                   Not In Word:
                 </div>
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("letter-not-in-word-text-color"), "letter-not-in-word-text-color", "layoutNotInWordColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("letter-not-in-word-text-color"), "letter-not-in-word-text-color", "layoutNotInWordColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorLayout("letter-not-in-word-text-color", "")}
                     name="not-in-word-text-select"
@@ -799,7 +893,7 @@ class ColorPopUp extends React.Component {
                   Regular Text:
                 </div>
                 <Dropdown
-                    options={this.getColorOptions(this.getCurrentlySetColor("text-color"), "text-color", "textRegColorValue")}
+                    options={this.buildColorOptions(this.getCurrentlySetColor("text-color"), "text-color", "textRegColorValue")}
                     optionsHoverEffect="false"
                     default={this.getDefaultColorLayout("text-color", "")}
                     name="text-select"
