@@ -345,7 +345,6 @@ class Game extends React.Component {
 
   render()
   {
-    var test = localStorage.getItem("lastname");
     return (
       <>
       <div id="game-master">
@@ -362,7 +361,6 @@ class Game extends React.Component {
                   guesses={this.state.guesses}
                   guessTypes={this.state.guessTypes}
           />
-        <h1>SWWEEEETT {test}</h1>
           <Keyboard addLetter={this.addSelectedLetters}
                     updateSelectedLetters={this.updateSelectedLetters}
                     handleSubmit={this.handleSubmit}

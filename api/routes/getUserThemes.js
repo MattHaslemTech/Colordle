@@ -5,6 +5,9 @@ var router = express.Router();
 
 router.get("/", function(req, res, next) {
 
+    var user = req.query.user;
+    console.log("user" + user);
+
     //console.log(req.query);
     console.log("env " + process.env.ENV);
     console.log("NODE_ENV '" + process.env.NODE_ENV + "'");
@@ -25,7 +28,7 @@ router.get("/", function(req, res, next) {
       console.log('The solution is: ', rows[0].solution)
     })
 
-    connection.end() 
+    connection.end()
 
 });
 

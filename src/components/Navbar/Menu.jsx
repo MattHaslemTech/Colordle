@@ -42,8 +42,8 @@ class Menu extends React.Component
   }
 
   testdb = () => {
-    console.log('testing');
-    fetch("http://localhost:9000/getUserThemes")
+    console.log(process.env.REACT_APP_API_URL);
+    fetch(process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId"))
         .then(res => res.text())
         .then(res => console.log("Res : " + res));
   }
