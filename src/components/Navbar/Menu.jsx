@@ -41,6 +41,13 @@ class Menu extends React.Component
     this.setState({popupOpen: false});
   }
 
+  testdb = () => {
+    console.log('testing');
+    fetch("http://localhost:9000/getUserThemes")
+        .then(res => res.text())
+        .then(res => console.log("Res : " + res));
+  }
+
   render(){
     return(
       <>
@@ -57,6 +64,9 @@ class Menu extends React.Component
           </div>
           <div className="item open-popup" onClick={this.openPopUp} data-popup="manageThemes">
             <img className="icon" src={colorWheel} />Manage Themes
+          </div>
+          <div className="item" onClick={this.testdb} data-popup="manageThemes">
+            <img className="icon" src={colorWheel} />Test
           </div>
 
         </div>

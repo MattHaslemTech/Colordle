@@ -10,6 +10,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var updateUserSettings = require("./routes/updateUserSettings");
 var deleteTheme = require("./routes/deleteTheme");
+var getUserThemes = require("./routes/getUserThemes");
 var app = express();
 
 // view engine setup
@@ -28,6 +29,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use("/updateUserSettings", updateUserSettings);
 app.use("/deleteTheme", deleteTheme);
+app.use("/getUserThemes", getUserThemes);
 
 
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
