@@ -43,6 +43,13 @@ class Game extends React.Component {
   componentDidMount()
   {
     this.setInitialTheme();
+
+    // Set session for the user
+    if(!localStorage.getItem("userId"))
+    {
+      localStorage.setItem("userId", this.makeid(15));
+    }
+
   }
 
   /*
@@ -326,10 +333,19 @@ class Game extends React.Component {
    }
 
 
-
+   makeid(length) {
+      var result           = '';
+      var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      var charactersLength = characters.length;
+      for ( var i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() *  charactersLength));
+     }
+     return result;
+  }
 
   render()
   {
+    var test = localStorage.getItem("lastname");
     return (
       <>
       <div id="game-master">
@@ -346,6 +362,7 @@ class Game extends React.Component {
                   guesses={this.state.guesses}
                   guessTypes={this.state.guessTypes}
           />
+        <h1>SWWEEEETT {test}</h1>
           <Keyboard addLetter={this.addSelectedLetters}
                     updateSelectedLetters={this.updateSelectedLetters}
                     handleSubmit={this.handleSubmit}
