@@ -3,14 +3,22 @@ const mysql = require('mysql');
 var express = require("express");
 var router = express.Router();
 
+/*
+ * Get a color Value from a theme
+ *
+ * @param user (ex: jBN7m68PzvP8sL5)
+ * @param value (ex: navbar-bg-color)
+ * @param themeName (ex: Custom0)
+ */
 router.get("/", function(req, res, next) {
 
     var user = req.query.user;
-    console.log("user" + user);
+    var value = req.query.value;
+    var themeName = req.query.themeName;
 
-    //console.log(req.query);
-    console.log("env " + process.env.ENV);
-    console.log("NODE_ENV '" + process.env.NODE_ENV + "'");
+    // Remove Hyphens from value
+    value = value.replace(new RegExp('-', 'g'),"");
+
 
     const connection = mysql.createConnection({
       host: process.env.DB_HOST,
@@ -22,10 +30,14 @@ router.get("/", function(req, res, next) {
 
     connection.connect();
 
-    connection.query('SELECT 1 + 1 AS solution', (err, rows, fields) => {
+    var query = 'SELECT ' + value + ' FROM customthemes WHERE creatorId="' + user + '" AND themeName="' + themeName + '"';
+
+    connection.query(query, (err, rows, fields) => {
       if (err) throw err
 
-      console.log('The solution is: ', rows[0].solution)
+      console.log('The solution is: ', rows[0][value])
+
+      res.send(rows[0][value]);
     })
 
     connection.end()

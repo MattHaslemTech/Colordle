@@ -43,7 +43,7 @@ class Menu extends React.Component
 
   testdb = () => {
     console.log(process.env.REACT_APP_API_URL);
-    fetch(process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId"))
+    fetch(process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId") + "&value=navbar-bg-color&themeName=sweet")
         .then(res => res.text())
         .then(res => console.log("Res : " + res));
   }
