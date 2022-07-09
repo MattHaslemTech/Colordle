@@ -25,24 +25,52 @@ class ThemesPopUp extends React.Component {
   /*
    * Get the name of the currently saved theme
    */
-  getCurrentTheme()
-  {
-    var userSettings = require('../../../files/user-settings.json');
-    return userSettings['selectedTheme'];
+  getCurrentTheme = async () => {
+    const res = await fetch(process.env.REACT_APP_API_URL + "/getUser?user=" + localStorage.getItem("userId"));
+    var userSettings = await res.json();
+
+    console.log("User theme : " + userSettings['currentTheme']);
+    return userSettings['currentTheme'];
+  }
+
+  /*
+   * Generates a list of themes for this.generateThemesList
+   */
+  generateThemesList = () => {
+    const getThemes = await fetch(process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId"));
+    var customThemes = await getThemes.json();
+
+    console.log("themes => " + customThemes);
+
+    let results = [];
+
+    customThemes.forEach(theme => {
+      console.log("Sweet => " + theme);
+      results.push(theme);
+    });
+    return results;
   }
 
   /*
    * Generate all the custom theme items that will show in the popup
    */
-  generateThemesList()
-  {
-    var userSettings = require('../../../files/user-settings.json');
-    var customThemes = userSettings["themes"];
+  generateThemesListItems = () => {
+
+    var customThemes = this.getThemesList();
+
+    var customThemes;
+
+    /*
+    fetch( process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId") )
+        .then(data => customThemes = data)
+        .then(res => console.log("Res : " + res));
+    */
 
     var results = [];
+    console.log("length : " + customThemes);
     if(customThemes)
     {
-      for( let themeName in customThemes)
+      for( let themeName in customThemes.data)
       {
         // Check if this theme is our current theme
         let isCurrentTheme = false;
