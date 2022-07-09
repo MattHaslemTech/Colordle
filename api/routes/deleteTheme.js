@@ -1,34 +1,44 @@
+const db = require('../db');
+const mysql = require('mysql');
 var express = require("express");
 var router = express.Router();
 
+/*
+ * Delete's a theme
+ *
+ * @param user : the session id of the user
+ * @param themeName : The name of the theme to delete
+ */
 router.get("/", function(req, res, next) {
 
-    const fs = require('fs');
-    const fileName = './../src/files/user-settings.json';
-    var file = require('../../src/files/user-settings.json');
+    if(!req.query.user || !req.query.themeName)
+    {
+      res.send("Incorrect query");
+      return;
+    }
+
+    var userId = req.query.user;
+    var themeName = req.query.themeName;
+
+    const connection = mysql.createConnection({
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_DB
+    })
+
+    connection.connect();
+
+    var query = "DELETE FROM `custom-themes` WHERE creatorId='" + userId + "' AND themeName='" + themeName + "'";
 
 
-    // Get the name of the theme we want to delete
-    let themeName = req.query.theme;
+    connection.query(query, (err, rows, fields) => {
+      if (err) throw err
 
-    // Go through the file and delete it
-    var data = fs.readFileSync(fileName);
-    var customThemes = JSON.parse(data);
+    })
 
-    //file.themes = customThemes.filter((theme) => { return theme !== themeName });
-    delete file.themes[themeName]
-
-    //console.log("Themes: " + file);
-
-
-    fs.writeFile(fileName, JSON.stringify(file, null, 2), function writeJSON(err) {
-      if (err) return console.log(err);
-
-      // Send a message so we know we did our job
-      res.send('awesome');
-
-    });
-
+    connection.end()
 
 });
 
