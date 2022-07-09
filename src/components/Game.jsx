@@ -47,7 +47,13 @@ class Game extends React.Component {
     // Set session for the user
     if(!localStorage.getItem("userId"))
     {
-      localStorage.setItem("userId", this.makeid(15));
+      var tempId = this.makeid(15)
+      localStorage.setItem("userId", tempId);
+
+      // Need to create a new user in the database
+      const res = fetch(process.env.REACT_APP_API_URL + "/insertUser?user=" + tempId)
+                  .then(res => console.log('New User Created'));
+
     }
 
   }

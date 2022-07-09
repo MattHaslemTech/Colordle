@@ -41,8 +41,13 @@ router.get("/", function(req, res, next) {
     connection.query(query, (err, rows, fields) => {
       if (err) throw err
 
+      // Handle if no results
+      if(rows.length == 0)
+      {
+        res.send(rows);
+      }
       // If a value is set, return just the value
-      if(req.query.value)
+      else if(req.query.value)
       {
         var value = req.query.value;
 
