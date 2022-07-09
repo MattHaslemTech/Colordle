@@ -9,15 +9,13 @@ var router = express.Router();
  * @param user (ex: jBN7m68PzvP8sL5)
  * @param value (ex: navbar-bg-color)
  * @param themeName (ex: Custom0)
+ *
+ * If themeName isn't set, return all of user's themes
+ * If value isn't set, return all whole theme row.
  */
 router.get("/", function(req, res, next) {
 
     var user = req.query.user;
-    var value = req.query.value;
-    var themeName = req.query.themeName;
-
-    // Remove Hyphens from value
-    value = value.replace(new RegExp('-', 'g'),"");
 
 
     const connection = mysql.createConnection({
@@ -30,14 +28,33 @@ router.get("/", function(req, res, next) {
 
     connection.connect();
 
-    var query = 'SELECT ' + value + ' FROM customthemes WHERE creatorId="' + user + '" AND themeName="' + themeName + '"';
+    var query = 'SELECT * FROM `custom-themes` WHERE creatorId="' + user + '"';
+
+    // If a themeName is set, add it to the query
+    if(req.query.themeName)
+    {
+      query += '" AND themeName="' + req.query.themeName + '"';
+    }
+
 
     connection.query(query, (err, rows, fields) => {
       if (err) throw err
 
-      console.log('The solution is: ', rows[0][value])
+      // If a value is set, return just the value
+      if(req.query.value)
+      {
+        var value = req.query.value;
 
-      res.send(rows[0][value]);
+        // Remove Hyphens from value
+        value = value.replace(new RegExp('-', 'g'),"");
+
+        res.send(rows[0][value]);
+      }
+      else
+      {
+        res.send(rows);
+      }
+
     })
 
     connection.end()
