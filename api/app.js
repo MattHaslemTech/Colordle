@@ -11,13 +11,14 @@ var usersRouter = require('./routes/users');
 var updateUserSettings = require("./routes/updateUserSettings");
 var deleteTheme = require("./routes/deleteTheme");
 var getUserThemes = require("./routes/getUserThemes");
+var getUser = require("./routes/getUser");
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(cors());  
+app.use(cors());
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -30,6 +31,7 @@ app.use('/users', usersRouter);
 app.use("/updateUserSettings", updateUserSettings);
 app.use("/deleteTheme", deleteTheme);
 app.use("/getUserThemes", getUserThemes);
+app.use("/getUser", getUser);
 
 
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
