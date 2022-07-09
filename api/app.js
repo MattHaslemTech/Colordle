@@ -8,10 +8,15 @@ var cors = require("cors");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
 var updateUserSettings = require("./routes/updateUserSettings");
+
 var deleteTheme = require("./routes/deleteTheme");
 var getUserThemes = require("./routes/getUserThemes");
+
 var getUser = require("./routes/getUser");
+var insertUser = require("./routes/insertUser");
+
 var app = express();
 
 // view engine setup
@@ -28,10 +33,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
 app.use("/updateUserSettings", updateUserSettings);
-app.use("/deleteTheme", deleteTheme);
+
 app.use("/getUserThemes", getUserThemes);
+app.use("/deleteTheme", deleteTheme);
+
 app.use("/getUser", getUser);
+app.use("/insertUser", insertUser);
 
 
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })

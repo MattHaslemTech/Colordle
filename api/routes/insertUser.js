@@ -4,7 +4,7 @@ var express = require("express");
 var router = express.Router();
 
 /*
- * Returns whole row from a selected User based on their ID
+ * Insert User into DB
  */
 router.get("/", function(req, res, next) {
 
@@ -20,13 +20,14 @@ router.get("/", function(req, res, next) {
 
     connection.connect();
 
-    var query = "SELECT * FROM `users` WHERE sessionId='" + userId + "'";
+    var query = "INSERT INTO `users` (sessionId) VALUES ('" + userId + "')";
 
 
     connection.query(query, (err, rows, fields) => {
       if (err) throw err
+      console.log(rows);
 
-      res.send(rows[0]);
+      res.send(rows);
     })
 
     connection.end()

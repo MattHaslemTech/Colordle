@@ -41,11 +41,16 @@ class Menu extends React.Component
     this.setState({popupOpen: false});
   }
 
-  testdb = () => {
-    console.log(process.env.REACT_APP_API_URL);
-    fetch(process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId") )
-        .then(res => res.text())
-        .then(res => console.log("Res : " + res));
+  testdb = async () => {
+
+    let obj;
+
+    const res = await fetch(process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId") + "&themeName=Custom-1&value=game-bg-color")
+
+    obj = await res.json();
+
+    console.log("obj : " + obj);
+
   }
 
   render(){

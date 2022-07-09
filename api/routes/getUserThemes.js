@@ -33,9 +33,10 @@ router.get("/", function(req, res, next) {
     // If a themeName is set, add it to the query
     if(req.query.themeName)
     {
-      query += '" AND themeName="' + req.query.themeName + '"';
+      query += ' AND themeName="' + req.query.themeName + '"';
     }
 
+    console.log("query: " + query);
 
     connection.query(query, (err, rows, fields) => {
       if (err) throw err
@@ -49,6 +50,10 @@ router.get("/", function(req, res, next) {
         value = value.replace(new RegExp('-', 'g'),"");
 
         res.send(rows[0][value]);
+      }
+      else if (req.query.themeName)
+      {
+        res.send(rows[0]);
       }
       else
       {
