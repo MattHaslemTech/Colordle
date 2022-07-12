@@ -15,11 +15,16 @@ class ThemesPopUp extends React.Component {
   {
     super(props);
     this.state = {
-      themes: this.generateThemesList(),
       currentThemeName: this.getCurrentTheme()
     }
 
     this.deleteItem = this.deleteItem.bind(this);
+  }
+
+
+  componentDidMount()
+  {
+    this.getThemesList();
   }
 
   /*
@@ -35,43 +40,39 @@ class ThemesPopUp extends React.Component {
 
   /*
    * Generates a list of themes for this.generateThemesList
+   *
+   * Okay, so the only way I could get this to work was to not use async.
+   * So this fetches the daya then passes it to generateThemesListItems() (as a callback) to set the state of item to populate the popup
    */
-  generateThemesList = () => {
-    const getThemes = await fetch(process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId"));
-    var customThemes = await getThemes.json();
+  getThemesList = () => {
 
-    console.log("themes => " + customThemes);
+    var customThemesList;
 
-    let results = [];
+    fetch( process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId") )
+        .then( res => res.json() )
+        .then(
+          (data) => {
+            console.log( "Res : " + data );
+            this.generateThemesListItems(data);
+          }
+        )
 
-    customThemes.forEach(theme => {
-      console.log("Sweet => " + theme);
-      results.push(theme);
-    });
-    return results;
   }
 
   /*
    * Generate all the custom theme items that will show in the popup
    */
-  generateThemesListItems = () => {
+  generateThemesListItems(customThemes) {
 
-    var customThemes = this.getThemesList();
-
-    var customThemes;
-
-    /*
-    fetch( process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId") )
-        .then(data => customThemes = data)
-        .then(res => console.log("Res : " + res));
-    */
 
     var results = [];
-    console.log("length : " + customThemes);
+
     if(customThemes)
     {
-      for( let themeName in customThemes.data)
+      for( let theme in customThemes)
       {
+        let themeName = customThemes[theme]["themeName"];
+
         // Check if this theme is our current theme
         let isCurrentTheme = false;
         if(themeName == this.getCurrentTheme())
@@ -89,12 +90,24 @@ class ThemesPopUp extends React.Component {
 
 
         // Create the color box to go with the theme
-        var themeArr = customThemes[themeName];
+        var themeArr = customThemes[theme];
         var colorBox = [];
         var i = 0;
         for( var colorName in themeArr )
         {
             var colorValue = themeArr[colorName];
+
+            // If it's not a string, just move on
+            if(typeof colorValue !== 'string')
+            {
+              continue;
+            }
+            // If the value doesn't have rgba or # in it, it's not a color value. Just move on.
+            if( !(colorValue.toLowerCase().includes('rgba')) && !(colorValue.toLowerCase().includes('#')))
+            {
+              continue;
+            }
+
 
             var boxStyle = {
               background: colorValue,
@@ -115,7 +128,9 @@ class ThemesPopUp extends React.Component {
       results.push(<h3>You have no saved themes!</h3>);
     }
 
-    return results;
+    this.setState({ themes: results });
+
+    //return results;
   }
 
 
