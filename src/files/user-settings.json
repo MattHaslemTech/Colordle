@@ -1,7 +1,7 @@
 {
   "id": "Sweet",
-  "selectedTheme": "Custom-2",
-  "previousTheme": "Custom-2",
+  "selectedTheme": "Custom-1",
+  "previousTheme": "Custom-1",
   "themes": {
     "Custom-1": {
       "game-bg-color": "rgba(31,41,55,1)",
