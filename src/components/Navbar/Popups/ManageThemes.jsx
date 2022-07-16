@@ -150,7 +150,7 @@ class ThemesPopUp extends React.Component {
        // Open the loader
        this.handleLoader('open');
 
-       fetch("http://localhost:9000/deleteTheme?theme=" + themeName)
+       fetch(process.env.REACT_APP_API_URL + "/deleteTheme?theme=" + themeName)
            .then(res => res.text())
            .then(res => this.handleLoader('close'));
      }
@@ -174,8 +174,9 @@ class ThemesPopUp extends React.Component {
       this.handleLoader('open');
 
       // Update JSON File
-      fetch("http://localhost:9000/updateUserSettings?theme=" + themeName + "&saveTheme=true")
-          .then(res => this.handleLoader('close'));
+      fetch( process.env.REACT_APP_API_URL + "/updateUserSettings?userId=" + localStorage.getItem("userId") + "&keyName=currentTheme&value=" + themeName)
+          .then(res => this.handleLoader('close'))
+          .then(res => console.log(res));
     }
   }
 

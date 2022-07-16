@@ -43,11 +43,11 @@ class Menu extends React.Component
 
   testdb = async () => {
 
-    let obj;
+    //let obj;
 
     const res = await fetch(process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId") + "&themeName=Custom-1&value=game-bg-color")
 
-    obj = await res.json();
+    let obj = await res.text();
 
     console.log("obj : " + obj);
 
