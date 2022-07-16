@@ -13,6 +13,7 @@ var updateUserSettings = require("./routes/updateUserSettings");
 
 var deleteTheme = require("./routes/deleteTheme");
 var getUserThemes = require("./routes/getUserThemes");
+var getDefaultThemes = require("./routes/getDefaultThemes");
 
 var getUser = require("./routes/getUser");
 var insertUser = require("./routes/insertUser");
@@ -37,6 +38,7 @@ app.use('/users', usersRouter);
 app.use("/updateUserSettings", updateUserSettings);
 
 app.use("/getUserThemes", getUserThemes);
+app.use("/getDefaultThemes", getDefaultThemes);
 app.use("/deleteTheme", deleteTheme);
 
 app.use("/getUser", getUser);

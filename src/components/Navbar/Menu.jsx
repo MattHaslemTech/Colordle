@@ -45,7 +45,8 @@ class Menu extends React.Component
 
     //let obj;
 
-    const res = await fetch(process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId") + "&themeName=Custom-1&value=game-bg-color")
+    //const res = await fetch(process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId") + "&themeName=Custom-1&value=game-bg-color")
+    const res = await fetch(process.env.REACT_APP_API_URL + "/getUser?user=nice")
 
     let obj = await res.text();
 

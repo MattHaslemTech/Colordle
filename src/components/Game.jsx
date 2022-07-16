@@ -301,40 +301,112 @@ class Game extends React.Component {
 
   /*
    * Set initial theme that's set in user-settings
+   *
+   * This gets an object from the DB and passes it to 'setInitialThemeValues()' which actually sets the theme values
    */
-   setInitialTheme()
-   {
-     var defaultThemes = require('../files/themes.json');
+   setInitialTheme = async() => {
 
-     var userSettings = require('../files/user-settings.json');
-     var selectedThemeName = userSettings["selectedTheme"];
+     // Grab set theme from 'users' table
+     const userReq = await fetch(process.env.REACT_APP_API_URL + "/getUser?user=" + localStorage.getItem("userId"));
+     let userData = await userReq.json();
 
-     var customThemes = userSettings["themes"];
+     const currentThemeName = userData.currentTheme;
 
-     // If it's in default theme file
-     var selectedTheme = [];
-     if(defaultThemes[selectedThemeName])
+     // Check if the theme is a default one
+     this.getDefaultTheme(currentThemeName)
+      .then(data => {
+
+        var themeArr;
+        // If the theme exist in default-themes;
+        if(Object.keys(data).length > 0)
+        {
+          this.setInitialThemeValues(data);
+        }
+
+        // If it's not a default theme
+        else
+        {
+          this.getUserTheme(currentThemeName)
+           .then(data2 => {
+             this.setInitialThemeValues(data2);
+           });
+        }
+      });
+
+   }
+
+
+   setInitialThemeValues = (themeObject) => {
+
+     const themeKeys = [
+       "game-bg-color",
+       "navbar-bg-color",
+       "menu-bg-color",
+       "hamburger-open-bg-color",
+       "text-color",
+       "keyboard-text-color",
+       "board-text-color",
+       "keyboard-letter-background",
+       "letter-selected-row-bg-color",
+       "letter-bg-color",
+       "letter-color-glow",
+       "letter-correct-spot-bg-color",
+       "letter-bg-in-word-color",
+       "letter-not-in-word-text-color",
+       "not-in-dictionary-bg-color"
+     ];
+
+     for(var key in themeObject)
      {
-       selectedTheme = defaultThemes[selectedThemeName];
-     }
-     // If it's in custom theme file
-     if(customThemes[selectedThemeName])
-     {
-       selectedTheme = customThemes[selectedThemeName];
+       var value = themeObject[key];
+
+       // The key from the SQL table doesn't have hyphens in it, so we have to match it to one that does.
+       var keyName;
+       for(var index in themeKeys)
+       {
+         var varName = themeKeys[index].replace(/-/g, "");
+         if(varName === key)
+         {
+           keyName = themeKeys[index];
+         }
+         console.log("Var name : " + varName);
+       }
+
+       // Make sure we only get the color values
+       if(keyName === undefined)
+       {
+         continue;
+       }
+
+       keyName = "--" + keyName;
+       $('#game-master').get(0).style.setProperty(keyName, value);
      }
 
-     /*
-      * Grab Values from the given theme
-      */
-      var themeColors = selectedTheme;
-      for(var key in themeColors)
-      {
-        var value = themeColors[key];
+   }
 
-        // Set the colors from the theme
-        key = "--" + key;
-        $('#game-master').get(0).style.setProperty(key, value);
-      }
+
+   /*
+    * Get data from default theme
+    *
+    * Used to check if a theme is default or not.
+    */
+   getDefaultTheme = (themeName) => {
+     var results;
+     return fetch(process.env.REACT_APP_API_URL + "/getDefaultThemes?themeName=" + themeName)
+                        .then(res => res.json())
+                        .then(data => {
+                          return data;
+                        });
+
+   }
+
+   getUserTheme = (themeName) => {
+     var results;
+     return fetch(process.env.REACT_APP_API_URL + "/getUserThemes?themeName=" + themeName + "&user=" + localStorage.getItem("userId"))
+                        .then(res => res.json())
+                        .then(data => {
+                          return data;
+                        });
 
    }
 
