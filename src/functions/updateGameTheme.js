@@ -11,7 +11,6 @@ export const updateGameTheme = (themeName) => {
   getDefaultTheme(themeName)
    .then(data => {
 
-     var themeArr;
      // If the theme exist in default-themes;
      if(Object.keys(data).length > 0)
      {
@@ -63,7 +62,6 @@ const setInitialThemeValues = (themeObject) => {
       {
         keyName = themeKeys[index];
       }
-      console.log("Var name : " + varName);
     }
 
     // Make sure we only get the color values
@@ -86,7 +84,6 @@ const setInitialThemeValues = (themeObject) => {
  * Used to check if a theme is default or not.
  */
 const getDefaultTheme = (themeName) => {
-  var results;
   return fetch(process.env.REACT_APP_API_URL + "/getDefaultThemes?themeName=" + themeName)
                      .then(res => res.json())
                      .then(data => {
@@ -96,7 +93,6 @@ const getDefaultTheme = (themeName) => {
 }
 
 const getUserTheme = (themeName) => {
-  var results;
   return fetch(process.env.REACT_APP_API_URL + "/getUserThemes?themeName=" + themeName + "&user=" + localStorage.getItem("userId"))
                      .then(res => res.json())
                      .then(data => {

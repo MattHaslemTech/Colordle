@@ -2,8 +2,6 @@ import React from 'react';
 
 import $ from 'jquery';
 
-import Dropdown from '../../Items/Dropdown';
-import SaveButton from '../../Items/Save';
 
 import '../../styles/items/color-box.css';
 import '../../styles/popups/manageThemes.css';
@@ -48,8 +46,6 @@ class ThemesPopUp extends React.Component {
    */
   getThemesList = () => {
 
-    var customThemesList;
-
     fetch( process.env.REACT_APP_API_URL + "/getUserThemes?user=" + localStorage.getItem("userId") )
         .then( res => res.json() )
         .then(
@@ -77,7 +73,7 @@ class ThemesPopUp extends React.Component {
 
         // Check if this theme is our current theme
         let isCurrentTheme = false;
-        if(themeName == this.getCurrentTheme())
+        if(themeName === this.getCurrentTheme())
         {
           isCurrentTheme = true;
         }
@@ -199,11 +195,11 @@ class ThemesPopUp extends React.Component {
    */
   handleLoader(openOrClose)
   {
-    if(openOrClose == 'open')
+    if(openOrClose === 'open')
     {
       $('.loading-screen-wrap').addClass('open')
     }
-    if(openOrClose == 'close')
+    if(openOrClose === 'close')
     {
       $('.loading-screen-wrap').removeClass('open')
     }

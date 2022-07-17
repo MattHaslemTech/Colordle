@@ -3,21 +3,7 @@ import './styles/message.css';
 
 class Message extends React.Component
 {
-  constructor(props)
-  {
-    super(props);
-  }
 
-/*
-  shouldComponentUpdate(nextProps) {
-      if (nextProps.message !== this.props.message) {
-        return true;
-      }
-
-      return false;
-
-   }
-*/
    render(){
      var show = "";
      if(this.props.message !== "")

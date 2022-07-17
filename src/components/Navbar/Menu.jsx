@@ -3,8 +3,6 @@ import React from 'react';
 import $ from 'jquery';
 
 import PopUp from './Popups/Popup';
-import ColorPopUp from './Popups/ColorPopup';
-import ThemesPopUp from './Popups/ManageThemes';
 
 import '../styles/menu.css';
 import colorWheel from './icons/color-wheel.png';
@@ -61,7 +59,7 @@ class Menu extends React.Component
 
 
           <div className="item open-popup" onClick={this.openPopUp} data-popup="color">
-            <img className="icon" src={colorWheel} />Change Colors
+            <img className="icon" alt="Colors Icon" src={colorWheel} />Change Colors
           </div>
           <div className="item open-popup" onClick={this.openPopUp} data-popup="stats
             ">
@@ -69,10 +67,10 @@ class Menu extends React.Component
             My Stats
           </div>
           <div className="item open-popup" onClick={this.openPopUp} data-popup="manageThemes">
-            <img className="icon" src={colorWheel} />Manage Themes
+            <img className="icon" alt="Colors Icon" src={colorWheel} />Manage Themes
           </div>
           <div className="item" onClick={this.testdb} data-popup="manageThemes">
-            <img className="icon" src={colorWheel} />Test
+            <img className="icon" alt="Colors Icon" src={colorWheel} />Test
           </div>
 
         </div>

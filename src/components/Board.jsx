@@ -1,7 +1,5 @@
 import React from 'react';
 
-import $ from 'jquery';
-
 import './styles/board.css';
 
 class Board extends React.Component {
@@ -56,14 +54,14 @@ class Board extends React.Component {
 
     var rows = [];
     var isActive = "";
-    for(var i = 0; i < this.state.numberOfGuesses; i++)
+    for(var j = 0; j < this.state.numberOfGuesses; j++)
     {
         // If it's the active row, we want to make sure css knows it
-        if(i == this.props.currentRow)
+        if(j === this.props.currentRow)
         {
           isActive = "active";
         }
-        else if(i < this.props.currentRow)
+        else if(j < this.props.currentRow)
         {
           isActive = "complete";
         }
@@ -73,7 +71,7 @@ class Board extends React.Component {
         }
 
 
-        rows.push(<BoardRow key={i} letters={guesses[i]} active={isActive} maxLetters={this.state.maxLetters} rowNum={i} guessTypes={this.props.guessTypes} />);
+        rows.push(<BoardRow key={j} letters={guesses[j]} active={isActive} maxLetters={this.state.maxLetters} rowNum={j} guessTypes={this.props.guessTypes} />);
     }
     this.setState({rows: rows});
 
@@ -92,7 +90,7 @@ class Board extends React.Component {
     for(var i = 0; i < this.state.numberOfGuesses; i++)
     {
       // If it's the active row, we want to make sure css knows it
-      if(i == this.props.currentRow)
+      if(i === this.props.currentRow)
       {
         isActive = "active";
       }
@@ -163,7 +161,7 @@ class BoardRow extends React.Component {
     {
       // Set the next letter so css can know to give it that glow
       var isActiveLetter = "";
-      if( i == this.props.letters.length )
+      if( i === this.props.letters.length )
       {
         isActiveLetter = "active";
       }
@@ -184,13 +182,14 @@ class BoardRow extends React.Component {
     {
 
       // Check if guess type exists for this row. If not set an array full of 4's
+      var guessType;
       if( guessTypes[this.props.rowNum] !== undefined )
       {
-        var guessType = guessTypes[this.props.rowNum][i];
+        guessType = guessTypes[this.props.rowNum][i];
       }
       else
       {
-        var guessType = 4;
+        guessType = 4;
       }
 
       // Set the letter if already set
@@ -202,7 +201,7 @@ class BoardRow extends React.Component {
 
       // Set the next letter so css can know to give it that glow
       var isActiveLetter = "";
-      if( i == selectedLetters.length )
+      if( i === selectedLetters.length )
       {
         isActiveLetter = "active";
       }
@@ -261,6 +260,8 @@ class BoardLetter extends React.Component {
         break;
       case 4:
         typeClass = "not-checked";
+        break;
+      default:
         break;
 
     }

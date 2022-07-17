@@ -1,5 +1,4 @@
 import React from 'react';
-import {createRoot} from 'react-dom/client';
 
 import $ from 'jquery';
 
@@ -96,7 +95,7 @@ class Dropdown extends React.Component
     var itemClickedOn = $(e.target);
 
     // If we're closing the menu
-    if(dropdownOpen == "true")
+    if(dropdownOpen === "true")
     {
       // If we're using the color picker, don't worry about it.
       if(!itemClickedOn.closest('.react-colorful').length)
@@ -159,7 +158,7 @@ class Dropdown extends React.Component
      *  Show dropdown triangle if props are set to do so
      */
     var dropdownTriangle = <></>;
-    if(this.props.dropdownTriangle && this.props.dropdownTriangle == "true")
+    if(this.props.dropdownTriangle && this.props.dropdownTriangle === "true")
     {
       dropdownTriangle = <DownTriangle />;
     }

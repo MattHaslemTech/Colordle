@@ -2,10 +2,6 @@ import React from "react";
 
 class Hamburger extends React.Component {
 
-  constructor(props)
-  {
-    super(props);
-  }
 
   handleClick = () => {
     this.props.onClick();

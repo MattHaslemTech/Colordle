@@ -1,7 +1,5 @@
 import React from 'react';
 
-import $ from 'jquery';
-
 import './styles/keyboard.css';
 
 
@@ -73,7 +71,7 @@ class Keyboard extends React.Component{
     var currentLetters = this.props.selectedLetters.slice();
 
     // If we hit the delete button
-    if(letter == "delete")
+    if(letter === "delete")
     {
       currentLetters.pop();
       this.props.updateSelectedLetters(currentLetters);
@@ -81,7 +79,7 @@ class Keyboard extends React.Component{
     }
 
     // If we hit submit
-    if(letter == "enter")
+    if(letter === "enter")
     {
       this.props.handleSubmit();
       return;
@@ -89,7 +87,7 @@ class Keyboard extends React.Component{
 
 
     // If the max number of letters is already there, don't do anything
-    if(this.props.selectedLetters.length == this.props.maxLetters)
+    if(this.props.selectedLetters.length === this.props.maxLetters)
     {
       return;
     }
@@ -125,9 +123,9 @@ class Keyboard extends React.Component{
 
     // Generate second row of keys
     tempRow = [];
-    for(var i = 0; i < 9; i++)
+    for(var j = 0; j < 9; j++)
     {
-      tempRow.push(letters[i + 10]);
+      tempRow.push(letters[j + 10]);
     }
     fullKeyboard.push(tempRow);
 
@@ -135,9 +133,9 @@ class Keyboard extends React.Component{
     tempRow = [];
     tempRow.push(<Letters key={"delete"} letter={"delete"} type={"not-selected"} handleClick={handleKeyClick} />);
 
-    for(var i = 0; i < 9; i++)
+    for(var k = 0; k < 9; k++)
     {
-      tempRow.push(letters[i + 19]);
+      tempRow.push(letters[k + 19]);
     }
 
     tempRow.push(<Letters key={"enter"} letter={"enter"} type={"not-selected"} handleClick={handleKeyClick} />);
@@ -205,7 +203,7 @@ class Letters extends React.Component {
     var content = this.state.letter;
 
     // Return the delete button with image instead of the letter
-    if(this.state.letter == "delete")
+    if(this.state.letter === "delete")
     {
       return(
         <div className="letter" data-type={this.props.type} data-value={this.state.type} onClick={() => this.handleClick()}>

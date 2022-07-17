@@ -1,6 +1,5 @@
 import React from 'react';
 
-import $ from 'jquery';
 
 import ThemesPopUp from './ManageThemes';
 import ColorPopUp from './ColorPopup';
@@ -34,6 +33,9 @@ class PopUp extends React.Component {
         break;
       case "color":
         content = <ColorPopUp closePopup={this.props.closePopup} />
+        break;
+      default:
+        content = <></>
     }
 
     this.setState({content: content});
@@ -50,11 +52,19 @@ class PopUp extends React.Component {
     //var content = this.getPopup();
 
     return(
+
       <div className={open + " pop-up-wrap"} data-name={this.props.popupName}>
         <div className="content-wrap">
           {this.state.content}
         </div>
       </div>
+      /*
+      <div className={"open pop-up-wrap"} data-name="color">
+        <div className="content-wrap">
+          <ColorPopUp closePopup={this.props.closePopup} />
+        </div>
+      </div>
+      */
     )
   }
 

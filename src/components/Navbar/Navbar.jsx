@@ -24,7 +24,7 @@ class Navbar extends React.Component
     var menuOpen = this.state.menuOpen;
 
     // If we're closing the menu
-    if(menuOpen == "true")
+    if(menuOpen === "true")
     {
       this.setState({menuOpen: "false"});
 

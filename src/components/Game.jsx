@@ -53,7 +53,7 @@ class Game extends React.Component {
       localStorage.setItem("userId", tempId);
 
       // Need to create a new user in the database
-      const res = fetch(process.env.REACT_APP_API_URL + "/insertUser?user=" + tempId)
+      fetch(process.env.REACT_APP_API_URL + "/insertUser?user=" + tempId)
                   .then(res => console.log('New User Created'));
 
     }
@@ -84,7 +84,7 @@ class Game extends React.Component {
 
     // If we reached max letters and the word isn't in the dictionary, the letters should be red
     var activeRow = $('.board-row[data-active="active"]');
-    if(letters.length == this.state.maxLetters && !this.checkDictionary(letters))
+    if(letters.length === this.state.maxLetters && !this.checkDictionary(letters))
     {
       activeRow.addClass('not-in-dictionary');
 
@@ -120,7 +120,7 @@ class Game extends React.Component {
   {
     var selectedLetters = this.state.selectedLetters.slice();
     var answer = this.state.answer.slice();
-    var currentRow = this.state.currentRow;
+    //var currentRow = this.state.currentRow;
     var allGuessTypes = this.state.guessTypes.slice();
 
     var correctLetters = this.state.correctLetters.slice();
@@ -162,7 +162,7 @@ class Game extends React.Component {
     for(var i = 0; i < this.state.maxLetters; i++)
     {
       // If in correct spot
-      if(selectedLetters[i] == answer[i])
+      if(selectedLetters[i] === answer[i])
       {
         tempGuessTypes.push(2);
 
@@ -194,18 +194,18 @@ class Game extends React.Component {
 
     // Create associative array that will keep track of how many time the guessed letter has appeared in the word so far as we traverse it
     var trackLetter = [];
-    for(var i = 0; i < this.state.maxLetters; i++)
+    for(var l = 0; l < this.state.maxLetters; l++)
     {
-        trackLetter[selectedLetters[i]] = 0;
+        trackLetter[selectedLetters[l]] = 0;
     }
 
-    for(var i = 0; i < this.state.maxLetters; i++)
+    for(var m = 0; m < this.state.maxLetters; m++)
     {
       // 41: increment letter count
-      trackLetter[selectedLetters[i]]++;
+      trackLetter[selectedLetters[m]]++;
 
       // If it's already marked as correct, just move on
-      if ( tempGuessTypes[i] == 2 )
+      if ( tempGuessTypes[m] === 2 )
       {
         continue;
       }
@@ -214,7 +214,7 @@ class Game extends React.Component {
       var occurances = 0;
       for(var k = 0; k < this.state.maxLetters; k++)
       {
-        if( selectedLetters[i] == answer[k] )
+        if( selectedLetters[m] === answer[k] )
         {
           occurances++;
         }
@@ -224,17 +224,17 @@ class Game extends React.Component {
       for(var j = 0; j < this.state.maxLetters; j++)
       {
         // Make sure that occurance isn't already marked as correct
-        if(selectedLetters[i] == answer[j] &&  tempGuessTypes[j] !== 2 )
+        if(selectedLetters[m] === answer[j] &&  tempGuessTypes[j] !== 2 )
         {
-            if ( trackLetter[selectedLetters[i]] <= occurances )
+            if ( trackLetter[selectedLetters[m]] <= occurances )
             {
-              tempGuessTypes[i] = 1;
+              tempGuessTypes[m] = 1;
             }
 
             // Add to misplacedLetters array if it's not in correctLetters array
-            if( !correctLetters.includes(selectedLetters[i]) && !misplacedLetters.includes(selectedLetters[i]) )
+            if( !correctLetters.includes(selectedLetters[m]) && !misplacedLetters.includes(selectedLetters[m]) )
             {
-              misplacedLetters.push(selectedLetters[i]);
+              misplacedLetters.push(selectedLetters[m]);
             }
 
         }
@@ -252,11 +252,11 @@ class Game extends React.Component {
      * Now we need to do all the stuff that updates colors on keyboard
      */
      // If the letter isn't in correctLetters or misplacedLetters arrays, put it in wrongLetters
-     for(var i = 0; i < this.state.maxLetters; i++)
+     for(var n = 0; n < this.state.maxLetters; n++)
      {
-       if( !correctLetters.includes(selectedLetters[i]) && !misplacedLetters.includes(selectedLetters[i]) && !wrongLetters.includes(selectedLetters[i]) )
+       if( !correctLetters.includes(selectedLetters[n]) && !misplacedLetters.includes(selectedLetters[n]) && !wrongLetters.includes(selectedLetters[n]) )
        {
-         wrongLetters.push(selectedLetters[i]);
+         wrongLetters.push(selectedLetters[n]);
        }
      }
      this.setState({correctLetters: correctLetters});
@@ -284,7 +284,6 @@ class Game extends React.Component {
   {
     // Get word
     var word = "";
-    var selectedLetters = this.state.selectedLetters;
     letters.forEach(function(letter){
       word += letter;
     })

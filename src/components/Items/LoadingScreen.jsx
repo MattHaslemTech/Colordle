@@ -1,7 +1,5 @@
 import React from 'react';
 
-import $ from 'jquery';
-
 import '../styles/items/loading-screen.css';
 
 class LoadingScreen extends React.Component {
