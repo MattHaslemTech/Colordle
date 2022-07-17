@@ -8,6 +8,8 @@ import SaveButton from '../../Items/Save';
 import '../../styles/items/color-box.css';
 import '../../styles/popups/manageThemes.css';
 
+import {updateGameTheme} from '../../../functions/updateGameTheme';
+
 
 class ThemesPopUp extends React.Component {
 
@@ -176,7 +178,8 @@ class ThemesPopUp extends React.Component {
       // Update JSON File
       fetch( process.env.REACT_APP_API_URL + "/updateUserSettings?userId=" + localStorage.getItem("userId") + "&keyName=currentTheme&value=" + themeName)
           .then(res => this.handleLoader('close'))
-          .then(res => console.log(res));
+          .then(res => console.log(res))
+          .then(res => updateGameTheme(themeName));
     }
   }
 

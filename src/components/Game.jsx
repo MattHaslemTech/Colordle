@@ -10,6 +10,8 @@ import LoadingScreen from "./Items/LoadingScreen";
 import './styles/game.css';
 import raw from '../files/wordle-dictionary.txt';
 
+import {updateGameTheme} from '../functions/updateGameTheme';
+
 /*
  * Load Dictionary
  */
@@ -312,103 +314,10 @@ class Game extends React.Component {
 
      const currentThemeName = userData.currentTheme;
 
-     // Check if the theme is a default one
-     this.getDefaultTheme(currentThemeName)
-      .then(data => {
-
-        var themeArr;
-        // If the theme exist in default-themes;
-        if(Object.keys(data).length > 0)
-        {
-          this.setInitialThemeValues(data);
-        }
-
-        // If it's not a default theme
-        else
-        {
-          this.getUserTheme(currentThemeName)
-           .then(data2 => {
-             this.setInitialThemeValues(data2);
-           });
-        }
-      });
+     updateGameTheme(currentThemeName);
 
    }
 
-
-   setInitialThemeValues = (themeObject) => {
-
-     const themeKeys = [
-       "game-bg-color",
-       "navbar-bg-color",
-       "menu-bg-color",
-       "hamburger-open-bg-color",
-       "text-color",
-       "keyboard-text-color",
-       "board-text-color",
-       "keyboard-letter-background",
-       "letter-selected-row-bg-color",
-       "letter-bg-color",
-       "letter-color-glow",
-       "letter-correct-spot-bg-color",
-       "letter-bg-in-word-color",
-       "letter-not-in-word-text-color",
-       "not-in-dictionary-bg-color"
-     ];
-
-     for(var key in themeObject)
-     {
-       var value = themeObject[key];
-
-       // The key from the SQL table doesn't have hyphens in it, so we have to match it to one that does.
-       var keyName;
-       for(var index in themeKeys)
-       {
-         var varName = themeKeys[index].replace(/-/g, "");
-         if(varName === key)
-         {
-           keyName = themeKeys[index];
-         }
-         console.log("Var name : " + varName);
-       }
-
-       // Make sure we only get the color values
-       if(keyName === undefined)
-       {
-         continue;
-       }
-
-       keyName = "--" + keyName;
-       $('#game-master').get(0).style.setProperty(keyName, value);
-     }
-
-   }
-
-
-   /*
-    * Get data from default theme
-    *
-    * Used to check if a theme is default or not.
-    */
-   getDefaultTheme = (themeName) => {
-     var results;
-     return fetch(process.env.REACT_APP_API_URL + "/getDefaultThemes?themeName=" + themeName)
-                        .then(res => res.json())
-                        .then(data => {
-                          return data;
-                        });
-
-   }
-
-   getUserTheme = (themeName) => {
-     var results;
-     return fetch(process.env.REACT_APP_API_URL + "/getUserThemes?themeName=" + themeName + "&user=" + localStorage.getItem("userId"))
-                        .then(res => res.json())
-                        .then(data => {
-                          return data;
-                        });
-
-   }
 
 
    makeid(length) {
