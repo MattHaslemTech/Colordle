@@ -72,7 +72,10 @@ class ColorPopUp extends React.Component {
      */
 
      // Gets selected theme name and sets default value in dropdown
-     this.getSelectedThemeName();
+     var selectedThemeName = await this.getSelectedThemeName();
+     console.log("Theme Name : " +selectedThemeName);
+     this.setState({selectedThemeName: selectedThemeName});
+     this.setSelectedTheme(selectedThemeName);
 
      // Gets themes and populates 'select a theme' dropdown
      this.themeDropdownBuilder();
@@ -93,6 +96,7 @@ class ColorPopUp extends React.Component {
 
 
 
+     console.log(this.buildColorOptions(this.getCurrentlySetColor("letter-correct-spot-bg-color"), "letter-correct-spot-bg-color", "tileCorrectSpotColorValue"));
      var temp = await getTheme('Custom-1');
      /*
      getTheme('Slate (default)')
@@ -123,8 +127,6 @@ class ColorPopUp extends React.Component {
     return fetch( process.env.REACT_APP_API_URL + "/getUser?user=" + localStorage.getItem("userId"))
         .then(res => res.json())
         .then(res => {
-          this.setState({selectedThemeName: res.currentTheme});
-          this.setSelectedTheme(res.currentTheme);
           return res.currentTheme;
         });
   }
@@ -290,25 +292,18 @@ class ColorPopUp extends React.Component {
      * The state that we will be pulling from might not be ready.
      * If it's not, we have to pull from database.
      */
+
     if(this.state.colorValuesToSave.length > 0)
     {
       return this.state.colorValuesToSave['buildColorOptions'];
     }
     else
     {
+
       var originalThemeName = await this.getSelectedThemeName();
       var themeValues = await getTheme(originalThemeName);
-      console.log(themeValues);
-      console.log(type);
-      console.log(themeValues[type]);
       return themeValues[type];
-      //return themeValues[type];
-      fetch( process.env.REACT_APP_API_URL + "/getUser?user=" + localStorage.getItem("userId"))
-          .then(res => res.json())
-          .then(res => {
-            var themeName = res.currentTheme
 
-          });
     }
 
     // Get the selected theme from the user-settings file
@@ -422,30 +417,38 @@ class ColorPopUp extends React.Component {
   /*
    * Set the color picker and save/cancel buttons for tile dropdown
    */
-  buildColorOptions(colorValue, tileName, stateName)
-  {
+  buildColorOptions = (colorValuePromise, tileName, stateName) => {
 
     // Get default color
     var defaultColorValue;
 
     // If this is set as RGBA, we need to convert to an array
     var rgbaColorValue = {};
-    if( colorValue.substr(0, 4) == "rgba" )
-    {
-      var rgbaArr = colorValue.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',');
-      rgbaColorValue['r'] = rgbaArr[0];
-      rgbaColorValue['g'] = rgbaArr[1];
-      rgbaColorValue['b'] = rgbaArr[2];
-      rgbaColorValue['a'] = rgbaArr[3];
-    }
+    return colorValuePromise.then((colorValue) => {
 
-    // Set color picker to put in dropdown
-    var colorPicker = [<RgbaColorPicker color={rgbaColorValue} onChange={(color) => (this.updateLetterTile(color, tileName, stateName))} />];
+      console.log("colorvalue : " +colorValue);
 
-    // Add the save and cancel buttons
-    colorPicker.push(<><div className="close-popup button save" onClick={(e) => (this.handleSaveColorTile(tileName))}>Save</div><div className="close-popup button" onClick={(e) => (this.handleCancelColorTile(tileName, stateName))}>Cancel</div></>);
+      if( colorValue.substr(0, 4) == "rgba" )
+      {
+        var rgbaArr = colorValue.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',');
+        rgbaColorValue['r'] = rgbaArr[0];
+        rgbaColorValue['g'] = rgbaArr[1];
+        rgbaColorValue['b'] = rgbaArr[2];
+        rgbaColorValue['a'] = rgbaArr[3];
+      }
 
-    return colorPicker;
+      // Set color picker to put in dropdown
+      var colorPicker = [<RgbaColorPicker color={rgbaColorValue} onChange={(color) => (this.updateLetterTile(color, tileName, stateName))} />];
+
+      // Add the save and cancel buttons
+      colorPicker.push(<><div className="close-popup button save" onClick={(e) => (this.handleSaveColorTile(tileName))}>Save</div><div className="close-popup button" onClick={(e) => (this.handleCancelColorTile(tileName, stateName))}>Cancel</div></>);
+
+      //return colorPicker;
+      return <><h1>SWEETTT</h1></>;
+
+    });
+
+
   }
 
 
