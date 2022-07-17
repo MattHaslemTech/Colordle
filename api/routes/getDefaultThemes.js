@@ -10,16 +10,13 @@ var router = express.Router();
  * @param value (ex: navbar-bg-color)
  * @param themeName (ex: Custom0)
  *
+ * If themeName isn't set, return all rows
  * If value isn't set, return all whole theme row.
  */
 router.get("/", function(req, res, next) {
 
 
-    // Make sure theme name only has letters, numbers, spaces, hyphens, or underscores in it
-    const themePattern = /^[a-zA-Z0-9-_() ]+$/;
-    if(!req.query.themeName.match(themePattern)){
-      return res.status(400).json({err: "Invalid Theme Name!"});
-    }
+
 
 
     const connection = mysql.createConnection({
@@ -33,9 +30,22 @@ router.get("/", function(req, res, next) {
 
     connection.connect();
 
+    var queryParams = [];
+
     //var query = 'SELECT * FROM `custom-themes` WHERE creatorId="' + user + '"';
-    var query = 'SELECT * FROM `default-themes` WHERE themeName = ?';
-    var queryParams = [req.query.themeName];
+    var query = 'SELECT * FROM `default-themes`';
+    if(req.query.themeName)
+    {
+      // Make sure theme name only has letters, numbers, spaces, hyphens, or underscores in it
+      const themePattern = /^[a-zA-Z0-9-_() ]+$/;
+      if(!req.query.themeName.match(themePattern)){
+        return res.status(400).json({err: "Invalid Theme Name!"});
+      }
+
+      query +=  ' WHERE themeName = ?';
+      queryParams.push(req.query.themeName);
+
+    }
 
 
     console.log("query: " + query);

@@ -51,6 +51,13 @@ class Dropdown extends React.Component
     */
     if (this.props.default !== prevProps.default) {
     }
+
+    if (this.props.options !== prevProps.options) {
+      this.setState({items: this.buildOptions()});
+    }
+    if (this.props.customThemeOptions !== prevProps.customThemeOptions) {
+      this.setState({items: this.buildOptions()});
+    }
   }
 
 
@@ -61,6 +68,10 @@ class Dropdown extends React.Component
     var results = [];
 
     var i = 0;
+    if(!options.length > 0)
+    {
+      return;
+    }
     options.forEach((value, key) => {
       results.push(<div key={i} className="item row" onClick={this.selectItem}>{value}</div>);
 
@@ -74,6 +85,11 @@ class Dropdown extends React.Component
       var tempKey = "heading-" + i;
       results.push(<div key={tempKey} className="heading">Custom<div className="line"></div></div>);
       var j = i;
+
+      if(!customOptions.length > 0)
+      {
+        return;
+      }
       customOptions.forEach((value, key) => {
           results.push(<div key={j} className="item row" data-value={this.props.value} onClick={this.selectItem}>{value}</div>)
         j++;

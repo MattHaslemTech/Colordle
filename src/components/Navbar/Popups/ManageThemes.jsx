@@ -171,7 +171,6 @@ class ThemesPopUp extends React.Component {
       // Open the loader
       this.handleLoader('open');
 
-      // Update JSON File
       fetch( process.env.REACT_APP_API_URL + "/updateUserSettings?userId=" + localStorage.getItem("userId") + "&keyName=currentTheme&value=" + themeName)
           .then(res => this.handleLoader('close'))
           .then(res => console.log(res))
