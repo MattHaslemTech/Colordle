@@ -801,37 +801,12 @@ class ColorPopUp extends React.Component {
         return true;
       }
     }
-    // If it's in custom theme file
-    //if(customThemes[this.state.selectedThemeName])
-    /*
-    if(customThemes.indexOf(this.state.selectedThemeName) > -1)
-    {
-      console.log("Nope");
-      return true;
-    }
-    else
-    {
-      console.log("false " + this.state.selectedThemeName);
-    }
-    */
 
     return false;
   }
 
 
   render(){
-
-    /*
-    <Dropdown
-        options={this.state.defaultThemes}
-        optionsHoverEffect="true"
-        callback={this.updateTheme}
-        default={this.state.selectedTheme}
-        name="theme-select"
-        type="theme"
-        customThemeOptions={this.state.customThemes}
-    />
-    */
 
     return(
       <>
