@@ -32,6 +32,8 @@ router.get("/", function(req, res, next) {
     var query = "INSERT INTO `users` (sessionId) VALUES ( ? )";
     var queryParams = [userId];
 
+    console.log(query);
+
     connection.query(query, queryParams, (err, rows, fields) => {
       if (err) throw err
       console.log(rows);

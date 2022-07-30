@@ -3,7 +3,7 @@ const mysql = require('mysql');
 var express = require("express");
 var router = express.Router();
 
-/*
+/* 
  * Returns whole row from a selected User based on their ID
  *
  * @param user : the userId

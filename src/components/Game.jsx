@@ -44,7 +44,7 @@ class Game extends React.Component {
 
   componentDidMount()
   {
-    this.setInitialTheme();
+
 
     // Set session for the user
     if(!localStorage.getItem("userId"))
@@ -54,10 +54,19 @@ class Game extends React.Component {
 
       // Need to create a new user in the database
       fetch(process.env.REACT_APP_API_URL + "/insertUser?user=" + tempId)
-                  .then(res => console.log('New User Created'));
+                  .then(res => {
+                    console.log('New User Created => ' + res);
+                    updateGameTheme('Slate (default)');
+                  });
 
     }
+    else
+    {
+      this.setInitialTheme();
+    }
 
+
+    console.log("USER ID: " + localStorage.getItem("userId"));
   }
 
   /*
@@ -306,7 +315,6 @@ class Game extends React.Component {
    * This gets an object from the DB and passes it to 'setInitialThemeValues()' which actually sets the theme values
    */
    setInitialTheme = async() => {
-
      // Grab set theme from 'users' table
      const userReq = await fetch(process.env.REACT_APP_API_URL + "/getUser?user=" + localStorage.getItem("userId"));
      let userData = await userReq.json();

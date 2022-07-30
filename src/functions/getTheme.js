@@ -10,7 +10,6 @@ export const getTheme = (themeName) => {
   // Check if the theme is a default one
   return getDefaultTheme(themeName)
    .then(data => {
-
      var res = [];
      // If the theme exist in default-themes;
      if(Object.keys(data).length > 0)
@@ -83,7 +82,6 @@ const setInitialThemeArr = (themeObject) => {
   }
 
   return res;
-  console.log(res);
 
 }
 
@@ -96,6 +94,7 @@ export const getDefaultTheme = (themeName) => {
   return fetch(process.env.REACT_APP_API_URL + "/getDefaultThemes?themeName=" + themeName)
                      .then(res => res.json())
                      .then(data => {
+                       console.log('getDefault ' + data);
                        return data;
                      });
 

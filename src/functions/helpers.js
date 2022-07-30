@@ -61,6 +61,7 @@ export const objectToArray = (obj) => {
     res[index] = obj[index];
     console.log("index : " + index);
   }
+  console.log("RES : " + res);
 
   return res;
 
