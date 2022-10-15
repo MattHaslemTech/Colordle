@@ -184,7 +184,9 @@ class ColorPopUp extends React.Component {
     const selectedTheme =  await getTheme(selectedThemeName);
     var colors;
 
-    if(selectedTheme.length > 0)
+    console.log("Selected THEME : ", selectedTheme);
+    console.log("Selected THEME typeof : ", typeof selectedTheme);
+    if(Object.keys(selectedTheme).length > 0)
     {
       colors = selectedTheme;
     }
@@ -642,6 +644,9 @@ class ColorPopUp extends React.Component {
     this.setState({selectedThemeName: this.state.originalThemeName});
 
     // Reset the dropdown
+    var optionToSelect = $('.dropdown-wrap[data-name="theme-select-color-dropdown"] [data-value="' + this.state.originalThemeName + '"]');
+    optionToSelect.closest('.item.row').trigger('click');
+
     this.setSelectedTheme(themeName, this.state.allCustomThemesData)
       .then(() => {
         this.closePopup();
@@ -656,6 +661,9 @@ class ColorPopUp extends React.Component {
    * Close Popup when 'close' is clicked
    */
   closePopup = () => {
+
+    // The dropdown won't close else where for some reason
+    $('.dropdown-wrap[data-name="theme-select-color-dropdown"]').attr('data-open', false);
 
     //window.closePopUp();
     this.props.closePopup();
@@ -700,7 +708,7 @@ class ColorPopUp extends React.Component {
                   optionsHoverEffect="true"
                   callback={this.updateTheme}
                   default={this.state.selectedTheme}
-                  name="theme-select"
+                  name="theme-select-color-dropdown"
                   type="theme"
                   customThemeOptions={this.state.customThemes}
               />
