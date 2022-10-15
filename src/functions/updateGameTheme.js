@@ -29,8 +29,9 @@ export const updateGameTheme = (themeName) => {
 
 }
 
-const setInitialThemeValues = (themeObject) => {
+export const setInitialThemeValues = (themeObject) => {
 
+  console.log("themeObject ::: ", themeObject);
   const themeKeys = [
     "game-bg-color",
     "navbar-bg-color",

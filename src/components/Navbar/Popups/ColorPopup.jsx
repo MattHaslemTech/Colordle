@@ -9,7 +9,7 @@ import { RgbaColorPicker } from "react-colorful";
 import { getDefaultTheme, getTheme, getAllDefaultThemes, getAllUserThemes } from '../../../functions/getTheme';
 import { hyphenateColorArray, objectToArray } from '../../../functions/helpers';
 import { getCurrentlySetColor } from '../../../functions/getCurrentlySetColor';
-import { updateGameTheme } from '../../../functions/updateGameTheme';
+import { updateGameTheme, setInitialThemeValues } from '../../../functions/updateGameTheme';
 
 import '../../styles/popups.css';
 import '../../styles/popups/colorPopup.css';
@@ -70,11 +70,12 @@ class ColorPopUp extends React.Component {
       defaultThemes: <></>,
       customThemes: <></>,
 
-      //selectedTheme: this.setSelectedTheme(),
       selectedThemeName: "",
       selectedTheme: <></>,
 
       allCustomThemesData: [],
+
+      creatingNewTheme: false,
       //savedThemeName: require('../../../files/user-settings.json')["previousTheme"],
       /*
       apiResponse: "",
@@ -103,52 +104,36 @@ class ColorPopUp extends React.Component {
    * Update Colors after component has been rendered
    */
    componentDidMount = async () =>{
-     /*
-     var userSettings = require('../../../files/user-settings.json');
-     var selectedThemeName = userSettings["selectedTheme"];
-
-     this.updateTheme(selectedThemeName);
-     */
-
-     // Gets selected theme name and sets default value in dropdown
-     this.getSelectedThemeName();
-
 
      // Gets themes and populates 'select a theme' dropdown
-     this.themeDropdownBuilder();
+     var allUserThemesArr = await getAllUserThemes();
+     // Save so we can modify later
+     this.setState({allCustomThemesData: allUserThemesArr});
+     this.themeDropdownBuilder(allUserThemesArr);
+
+     // Gets selected theme name and sets default value in dropdown
+     var selectedThemeName = await this.getSelectedThemeName();
+     this.setSelectedTheme(selectedThemeName, allUserThemesArr);
 
 
      // Save a list of the names of every default theme
      var allDefaultThemesArr = await getAllDefaultThemes();
-     var tempDefaultThemeNames = [];
-     for( var theme in allDefaultThemesArr)
-     {
-       let themeName = allDefaultThemesArr[theme]['themeName'];
-       console.log("Theme : " + themeName);
-       tempDefaultThemeNames.push(themeName);
-     }
-     this.setState({defaultThemeNames: tempDefaultThemeNames});
+     var defaultThemeNames = allDefaultThemesArr.map(o => {return o.themeName});
+     this.setState({defaultThemeNames: defaultThemeNames, allDefaultThemes: allDefaultThemesArr});
 
 
 
      // Save a list of the names of every user theme
      var allUserThemesArr = await getAllUserThemes();
-     var tempCustomThemeNames = [];
-     for( var theme in allUserThemesArr)
-     {
-       let themeName = allUserThemesArr[theme]['themeName'];
-       console.log("Custom Theme : " + themeName);
-       tempCustomThemeNames.push(themeName);
-     }
-     this.setState({customThemeNames: tempCustomThemeNames});
+     var customThemeNames = allUserThemesArr.map(o => {return o.themeName});
+     this.setState({customThemeNames: customThemeNames});
 
 
 
      // Get and set original theme's name and color values
-     var originalThemeName = await this.getSelectedThemeName();
-     this.setState({originalThemeName: originalThemeName});
+     this.setState({originalThemeName: selectedThemeName});
 
-     var originalColorValues = await getTheme(originalThemeName);
+     var originalColorValues = await getTheme(selectedThemeName);
      var originalColorValuesObj = { ...this.state.originalColorValues };
      for( var colorName in originalColorValues )
      {
@@ -161,52 +146,32 @@ class ColorPopUp extends React.Component {
 
      // Set the theme to save to be this initially as well
      this.setState({colorValuesToSave: originalColorValuesObj});
-     this.setState({themeNameToSave: originalThemeName});
+     this.setState({themeNameToSave: selectedThemeName});
 
      /*
       *  Build the dropdown options that will be used for color dropdowns
       */
     this.buildColorOptions();
 
-
-     var temp = await getTheme('White');
-     for( var color in temp )
-     {
-       //console.log("colorName: " + color);
-       //console.log("color: " + temp[color]);
-     }
-
-     /*
-     getTheme('Slate (default)')
-      .then(res => res.json())
-      .then(data => {
-          temp = data;
-
-        }
-      );
-      */
-     //console.log(temp);
-
    }
 
    componentDidUpdate(prevProps) {
-    // Typical usage (don't forget to compare props):
-    if (this.props.userID !== prevProps.userID) {
-      this.fetchData(this.props.userID);
+      // Typical usage (don't forget to compare props):
+      if (this.props.userID !== prevProps.userID) {
+        this.fetchData(this.props.userID);
+      }
     }
-  }
 
 
   /*
    * Get currently selected theme name and set it as state
    */
-  getSelectedThemeName = () => {
+  getSelectedThemeName = async () => {
 
     return fetch( process.env.REACT_APP_API_URL + "/getUser?user=" + localStorage.getItem("userId"))
         .then(res => res.json())
         .then(res => {
           this.setState({selectedThemeName: res.currentTheme});
-          this.setSelectedTheme(res.currentTheme);
           return res.currentTheme;
         });
   }
@@ -214,11 +179,25 @@ class ColorPopUp extends React.Component {
   /*
    * Sets the default theme for the theme dropdown
    */
-  setSelectedTheme = async (selectedThemeName) => {
+  setSelectedTheme = async (selectedThemeName, allCustomThemesData) => {
 
     const selectedTheme =  await getTheme(selectedThemeName);
+    var colors;
 
-    var colors = selectedTheme;
+    if(selectedTheme.length > 0)
+    {
+      colors = selectedTheme;
+    }
+    else
+    {
+      var themeData = allCustomThemesData.find(o => o.themeName === selectedThemeName);
+      colors = hyphenateColorArray(themeData);
+      console.log("themeData ::: ", themeData);
+      console.log("COLORS : ", colors);
+      console.log("allCustomThemesData ::; ", allCustomThemesData);
+    }
+
+
 
     var option = <div className="title">{selectedThemeName}</div>;
 
@@ -246,39 +225,13 @@ class ColorPopUp extends React.Component {
 
   }
 
-  /*
-   * Get the color values in the initially saved theme
-   */
-  getCurrentThemeValues = async () => {
-
-    // Get the selected theme from the user-settings file
-    var userSettings = require('../../../files/user-settings.json');
-    var selectedThemeName = userSettings["selectedTheme"];
-
-    var customThemes = userSettings["themes"];
-    var defaultThemes = require('../../../files/themes.json');
-
-    // If it's in default theme file
-    var result;
-    if(defaultThemes[selectedThemeName])
-    {
-      result = defaultThemes[selectedThemeName];
-    }
-    // If it's in custom theme file
-    if(customThemes[selectedThemeName])
-    {
-      result = customThemes[selectedThemeName];
-    }
-
-    return result;
-  }
 
 
 
   /*
    * Build 'select a theme' dropdown
    */
-  themeDropdownBuilder = async () => {
+  themeDropdownBuilder = async (allCustomThemesData) => {
 
     var res = <></>;
     // Fetch default themes and save them
@@ -286,11 +239,7 @@ class ColorPopUp extends React.Component {
     var defaultThemesSelectElements = this.defaultThemeDropdownBuilder(allDefaultThemesArr);
 
     // Fetch custom themes and save them
-    var allUserThemesArr = await getAllUserThemes();
-    var userThemesSelectElements = this.customThemeDropdownBuilder(allUserThemesArr);
-
-    // Save so we can modify later
-    this.setState({allCustomThemesData: allUserThemesArr});
+    var userThemesSelectElements = this.customThemeDropdownBuilder(allCustomThemesData);
 
     return res;
   }
@@ -334,9 +283,6 @@ class ColorPopUp extends React.Component {
     var results = [];
     // Add our custom made ones to that list
     // Go through each theme
-
-    console.log("CUSTOM THEMES : ", customThemes);
-
     for( var theme in customThemes)
     {
       let themeName = customThemes[theme]['themeName'];
@@ -369,126 +315,28 @@ class ColorPopUp extends React.Component {
 
 
 
-  /*
-   * Get currently set items
-   */
-
-  //getCurrentlySetColor = async (type) =>{
-
-    //console.log(type);
-
-    /*
-     * The state that we will be pulling from might not be ready.
-     * If it's not, we have to pull from database.
-     */
-     /*
-    if(this.state.colorValuesToSave.length > 0)
-    {
-      return this.state.colorValuesToSave['buildColorOptions'];
-    }
-    else
-    {
-
-      var originalThemeName = await this.getSelectedThemeName();
-      var themeValues = await getTheme(originalThemeName);
-      console.log(themeValues);
-      console.log(type);
-      console.log(themeValues[type]);
-      return themeValues[type];
-
-      fetch( process.env.REACT_APP_API_URL + "/getUser?user=" + localStorage.getItem("userId"))
-          .then(res => res.json())
-          .then(res => {
-            var themeName = res.currentTheme
-
-          });
-
-      return "Darn";
-
-    }
-    */
-
-    // Get the selected theme from the user-settings file
-
-    /*
-    var userSettings = require('../../../files/user-settings.json');
-    var selectedThemeName = userSettings["selectedTheme"];
-
-    var customThemes = userSettings["themes"];
-    var defaultThemes = require('../../../files/themes.json');
-
-    // If it's in default theme file
-    var result;
-    if(defaultThemes[selectedThemeName])
-    {
-      result = defaultThemes[selectedThemeName][type];
-    }
-    // If it's in custom theme file
-    if(customThemes[selectedThemeName])
-    {
-      result = customThemes[selectedThemeName][type];
-    }
-
-    return result;
-    */
-
-    //return this.state.colorValuesToSave['buildColorOptions'];
-  //}
-
-
 
   /*
    * Update the theme for the page and in the database
    */
   updateTheme = (themeName) => {
+
+    const allDefaultThemes = [...this.state.allDefaultThemes];
+    const allCustomThemesData = [...this.state.allCustomThemesData];
+
+    // Gather the colors for the theme
+    var colors = allDefaultThemes.find(o => o.themeName === themeName);
+    if( !(colors) )
+    {
+      colors = allCustomThemesData.find(o => o.themeName === themeName);
+    }
+
     // Update colors on page
-    updateGameTheme(themeName);
+    setInitialThemeValues(colors);
     this.setState({themeNameToSave: themeName});
     this.setState({selectedThemeName: themeName});
   }
 
-  /*
-  updateTheme(themeName)
-  {
-    var themeSource;
-
-    var userSettings = require('../../../files/user-settings.json');
-    var selectedThemeName = userSettings["selectedTheme"];
-
-    var customThemes = userSettings["themes"];
-    var defaultThemes = require('../../../files/themes.json');
-
-    // If it's in default theme file
-    var selectedTheme = [];
-    if(defaultThemes[themeName])
-    {
-      selectedTheme = defaultThemes[themeName];
-    }
-    // If it's in custom theme file
-    if(customThemes[themeName])
-    {
-      selectedTheme = customThemes[themeName];
-    }
-
-
-    /*
-     * Grab Values from the given theme
-
-     var themeColors = selectedTheme;
-     for(var key in themeColors)
-     {
-       var value = themeColors[key];
-
-       // Set the colors from the theme
-       key = "--" + key;
-       $('#game-master').get(0).style.setProperty(key, value);
-     }
-
-     // Set the new theme name
-     this.setState({selectedThemeName: themeName});
-
-  }
-  */
 
 
   /*
@@ -622,10 +470,17 @@ class ColorPopUp extends React.Component {
        * Update the theme dropdown
        */
        var allCustomThemesData = [...this.state.allCustomThemesData];
+       var newCustomThemeData = colorValuesToSave;
+       newCustomThemeData['themeName'] = themeName;
+       newCustomThemeData['creatorId'] = localStorage.getItem("userId");
+
+       allCustomThemesData.push(newCustomThemeData);
+
        console.log("allCustomThemesData : ", allCustomThemesData);
+       this.setState({allCustomThemesData: allCustomThemesData});
 
-
-
+       this.customThemeDropdownBuilder(allCustomThemesData);
+       this.setSelectedTheme(themeName, allCustomThemesData)
     }
 
 
@@ -745,7 +600,7 @@ class ColorPopUp extends React.Component {
     // Save theme name in json
     fetch("http://localhost:9000/updateUserSettings?theme=" + this.state.themeNameToSave + "&saveTheme=true")
         .then(res => res.text())
-    this.setState({savedThemeName: themeName});
+    this.setState({savedThemeName: themeName, originalThemeName: themeName});
 
     // Update saved theme values
     let themeValuesToSave = this.state.themeToSave;
@@ -774,30 +629,26 @@ class ColorPopUp extends React.Component {
   /*
    * Handle API call when the User clicks 'Cancel'
    */
-  handleCancel(themeName)
+  handleCancel()
   {
-
-    // Reset theme
-    //this.updateTheme(this.state.savedThemeName);
-
-    // We need to reset the selected theme in the JSON file
-    // Update JSON File
-    console.log("savedThemeName : ", this.state.savedThemeName);
-    fetch("http://localhost:9000/updateUserSettings?theme=" + this.state.savedThemeName + "&cancel=true")
-        .then(res => res.text())
-
+    // Update the colors
+    var themeName = this.state.originalThemeName;
+    this.updateTheme(themeName);
 
     // Reset selected Theme state
-    var selectedTheme = this.setSelectedTheme();
-    this.setState({selectedTheme: selectedTheme});
-    this.setState({selectedThemeName: this.state.savedThemeName});
+    //var selectedTheme = this.setSelectedTheme();
 
-    // We need to delete the custom theme created after the user updated color values
-    fetch("http://localhost:9000/deleteTheme?theme=")
-        .then(res => res.text())
+    //this.setState({selectedTheme: selectedTheme});
+    this.setState({selectedThemeName: this.state.originalThemeName});
+
+    // Reset the dropdown
+    this.setSelectedTheme(themeName, this.state.allCustomThemesData)
+      .then(() => {
+        this.closePopup();
+      });
 
     //window.closePopUp();
-    this.closePopup();
+
   }
 
 
