@@ -3,7 +3,7 @@ const mysql = require('mysql');
 var express = require("express");
 var router = express.Router();
 
-/* 
+/*
  * Returns whole row from a selected User based on their ID
  *
  * @param user : the userId
@@ -32,7 +32,7 @@ router.get("/", function(req, res, next) {
     var query = "SELECT * FROM `users` WHERE sessionId = ?";
     var queryParams = [userId];
 
-
+ 
     connection.query(query, queryParams, (err, rows, fields) => {
       if (err) throw err
 

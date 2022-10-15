@@ -73,6 +73,8 @@ class ColorPopUp extends React.Component {
       //selectedTheme: this.setSelectedTheme(),
       selectedThemeName: "",
       selectedTheme: <></>,
+
+      allCustomThemesData: [],
       //savedThemeName: require('../../../files/user-settings.json')["previousTheme"],
       /*
       apiResponse: "",
@@ -283,9 +285,12 @@ class ColorPopUp extends React.Component {
     var allDefaultThemesArr = await getAllDefaultThemes();
     var defaultThemesSelectElements = this.defaultThemeDropdownBuilder(allDefaultThemesArr);
 
-    // Fetch default themes and save them
+    // Fetch custom themes and save them
     var allUserThemesArr = await getAllUserThemes();
     var userThemesSelectElements = this.customThemeDropdownBuilder(allUserThemesArr);
+
+    // Save so we can modify later
+    this.setState({allCustomThemesData: allUserThemesArr});
 
     return res;
   }
@@ -329,6 +334,8 @@ class ColorPopUp extends React.Component {
     var results = [];
     // Add our custom made ones to that list
     // Go through each theme
+
+    console.log("CUSTOM THEMES : ", customThemes);
 
     for( var theme in customThemes)
     {
@@ -579,15 +586,28 @@ class ColorPopUp extends React.Component {
      */
     if( !this.checkIfCurrentThemeIsCustomTheme() )
     {
+      // We need to get the number of the last custom them with the word custom in it
       // First, see how many themes with the word 'custom' there already is
-
-      var numOfCustom = 1;
+      var themesWithCustomInIt = [];
       $.each(customThemes, function(index, value) {
-          numOfCustom++;
+          if(value.toLowerCase().includes("custom-"))
+          {
+            themesWithCustomInIt.push(value);
+          }
       });
 
+      // Sort the array by alphabetical order
+      themesWithCustomInIt.sort();
 
-      console.log("length " + numOfCustom);
+      // Get the last one and extract the number from it
+      var numOfCustom = 1;
+      if(themesWithCustomInIt.length > 0)
+      {
+        var lastCustomThemeName = themesWithCustomInIt[themesWithCustomInIt.length-1];
+        numOfCustom = lastCustomThemeName.split("-")[1];
+        numOfCustom++;
+      }
+
 
       var themeName = "Custom-" + numOfCustom;
 
@@ -596,6 +616,14 @@ class ColorPopUp extends React.Component {
       // Set the state so we know what custom theme has been created (so we can save or delete it later)
       this.setState({themeNameToSave: themeName});
       this.setState({selectedThemeName: themeName});
+
+
+      /*
+       * Update the theme dropdown
+       */
+       var allCustomThemesData = [...this.state.allCustomThemesData];
+       console.log("allCustomThemesData : ", allCustomThemesData);
+
 
 
     }
@@ -754,6 +782,7 @@ class ColorPopUp extends React.Component {
 
     // We need to reset the selected theme in the JSON file
     // Update JSON File
+    console.log("savedThemeName : ", this.state.savedThemeName);
     fetch("http://localhost:9000/updateUserSettings?theme=" + this.state.savedThemeName + "&cancel=true")
         .then(res => res.text())
 
