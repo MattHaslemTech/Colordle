@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const mysql = require('mysql2');
+const mysql = require('mysql');
 /*
  * Update the current user's setting in 'users' table
  *

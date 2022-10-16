@@ -223,7 +223,18 @@ class ColorPopUp extends React.Component {
 
     var res = <div className="item row">{option}<div data-value={selectedThemeName} className="colors-wrap">{colorResults}</div></div>;
 
-    this.setState({selectedTheme: res});
+
+    // Having a problem with inital top item being set twice. So make sure we only modify it after we set it initially
+    this.setState({selectedTheme: res}, () => {
+      var htmlToAdd = $('.dropdown-wrap[data-name="theme-select-color-dropdown"] [data-value="' + selectedThemeName + '"]').closest('.item').clone();
+      var topItemWrap = $('.dropdown-wrap[data-name="theme-select-color-dropdown"] .top-item');
+
+      // Make sure we're not setting it twice
+      if( topItemWrap.find('[data-value="' + selectedThemeName + '"]').length < 1 )
+      {
+        topItemWrap.html(htmlToAdd);
+      }
+    });
 
   }
 
@@ -335,8 +346,11 @@ class ColorPopUp extends React.Component {
 
     // Update colors on page
     setInitialThemeValues(colors);
-    this.setState({themeNameToSave: themeName});
-    this.setState({selectedThemeName: themeName});
+    this.setState({
+      themeNameToSave: themeName,
+      selectedThemeName: themeName,
+      originalColorValues: colors
+    });
   }
 
 
@@ -377,10 +391,8 @@ class ColorPopUp extends React.Component {
 
     if(colorValue == undefined)
     {
-      return <h1>Darn</h1>;
+      return 0;
     }
-
-
 
     // If this is set as RGBA, we need to convert to an array
     var rgbaColorValue = {};
@@ -420,16 +432,7 @@ class ColorPopUp extends React.Component {
     var customThemes = { ...this.state.customThemeNames };
     var currentTheme = this.state.selectedThemeName;
 
-    /*
-     * Update the state that's holding the values we want to save.
-     */
-    //var themeToUpdate = this.state.themeToSave;
-    var colorValuesToSave = { ...this.state.colorValuesToSave };
-    var newColorVarName = tileName.replace(/-/g, "");
 
-    colorValuesToSave[newColorVarName] = tempChosenColor;
-
-    this.setState({colorValuesToSave: colorValuesToSave});
 
     /*
      * Update theme name to save
@@ -461,76 +464,52 @@ class ColorPopUp extends React.Component {
 
       var themeName = "Custom-" + numOfCustom;
 
-      console.log("Theme Name: " + themeName);
-
       // Set the state so we know what custom theme has been created (so we can save or delete it later)
       this.setState({themeNameToSave: themeName});
       this.setState({selectedThemeName: themeName});
 
 
+       /*
+        * Update the state that's holding the values we want to save.
+        * We want to copy original color values because we're copying from a default theme
+        */
+       var colorValuesToSave = { ...this.state.originalColorValues };
+       var newColorVarName = tileName.replace(/-/g, "");
+
+       colorValuesToSave[newColorVarName] = tempChosenColor;
+
+       this.setState({colorValuesToSave: colorValuesToSave});
+
+
+       /*
+        * Update the theme dropdown
+        */
+        var allCustomThemesData = [...this.state.allCustomThemesData];
+        var newCustomThemeData = colorValuesToSave;
+        newCustomThemeData['themeName'] = themeName;
+        newCustomThemeData['creatorId'] = localStorage.getItem("userId");
+
+        allCustomThemesData.push(newCustomThemeData);
+
+        this.setState({allCustomThemesData: allCustomThemesData});
+
+        this.setState({creatingNewTheme: true});
+        this.customThemeDropdownBuilder(allCustomThemesData);
+        this.setSelectedTheme(themeName, allCustomThemesData)
+    }
+    else {
       /*
-       * Update the theme dropdown
+       * Update the state that's holding the values we want to save.
        */
-       var allCustomThemesData = [...this.state.allCustomThemesData];
-       var newCustomThemeData = colorValuesToSave;
-       newCustomThemeData['themeName'] = themeName;
-       newCustomThemeData['creatorId'] = localStorage.getItem("userId");
+      var colorValuesToSave = { ...this.state.colorValuesToSave };
+      var newColorVarName = tileName.replace(/-/g, "");
 
-       allCustomThemesData.push(newCustomThemeData);
+      colorValuesToSave[newColorVarName] = tempChosenColor;
 
-       console.log("allCustomThemesData : ", allCustomThemesData);
-       this.setState({allCustomThemesData: allCustomThemesData});
-
-       this.customThemeDropdownBuilder(allCustomThemesData);
-       this.setSelectedTheme(themeName, allCustomThemesData)
+      this.setState({colorValuesToSave: colorValuesToSave});
     }
 
 
-    // Get r, g, b, a values from current chosen color
-    //var rgbaArr = tempChosenColor.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',');
-
-
-
-    /*
-     * If it's not working off of a custom theme, we need to make a new one
-     * ( Check to see if current theme exists in user settings )
-     */
-     /*
-     // Set the theme that we will be updating
-     var themeName = this.state.selectedThemeName;
-
-     // Set the theme that we will be copying values from
-     var themeToCopy = "";
-
-     if( !this.checkIfCustomTheme() )
-     {
-       // First, see how many themes with the word 'custom' there already is
-       var numOfCustom = 0;
-       $.each(userSettings["themes"], function(index, value) {
-
-         if(index.toLowerCase().indexOf("custom") >= 0 )
-         {
-           numOfCustom++;
-         }
-
-       });
-
-       themeName = "Custom-" + numOfCustom;
-       themeToCopy = this.state.selectedThemeName;
-
-       // Set the state so we know what custom theme has been created (so we can delete it later)
-       this.setState({createdTheme: themeName});
-     }
-
-     console.log('themeName = ' + themeName);
-     */
-
-    // Update JSON File
-    /*
-    fetch("http://localhost:9000/updateUserSettings?r=" + rgbaArr[0] + "&g=" + rgbaArr[1] + "&b=" + rgbaArr[2] +  "&a=" + rgbaArr[3] +  "&colorType=" + tileName + "&currentTheme=" + themeName + "&themeToCopy=" + themeToCopy)
-        .then(res => res.text())
-        .then(res => console.log("Res : " + res));
-    */
   }
 
 
@@ -600,15 +579,23 @@ class ColorPopUp extends React.Component {
     let themeName = this.state.themeNameToSave;
 
     // Save theme name in json
-    fetch("http://localhost:9000/updateUserSettings?theme=" + this.state.themeNameToSave + "&saveTheme=true")
+    fetch("http://localhost:9000/updateUserSettings?keyName=currentTheme&value=" + this.state.themeNameToSave + "&saveTheme=true&userId=" + localStorage.getItem("userId"))
         .then(res => res.text())
+        .then(res => console.log("Updated user settings!", res))
     this.setState({savedThemeName: themeName, originalThemeName: themeName});
 
+    /*
     // Update saved theme values
-    let themeValuesToSave = this.state.themeToSave;
+    let themeValuesToSave = {...this.state.colorValuesToSave};
+    // We only want the color values
+    themeValuesToSave = Object.assign(...Object.keys(themeValuesToSave)
+            .filter( key => { return themeValuesToSave[key].toString().includes("rgba(")} )
+            .map( key => ({ [key]: themeValuesToSave[key] }) ) );
+
     var tempRgbaArr = [];
     var tempChosenColor = "";
     $.each(themeValuesToSave, (index, value) => {
+
       console.log("index -> " + index + "; value -> " + value);
       tempRgbaArr = value.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',')
 
@@ -618,13 +605,10 @@ class ColorPopUp extends React.Component {
           .then(res => console.log("Res : " + res));
 
     });
-
-
-
-
-
+    */
     // Close pop-up
     this.props.closePopup();
+
   }
 
 
@@ -637,22 +621,16 @@ class ColorPopUp extends React.Component {
     var themeName = this.state.originalThemeName;
     this.updateTheme(themeName);
 
-    // Reset selected Theme state
-    //var selectedTheme = this.setSelectedTheme();
-
-    //this.setState({selectedTheme: selectedTheme});
-    this.setState({selectedThemeName: this.state.originalThemeName});
+    this.setState({
+      selectedThemeName: this.state.originalThemeName,
+      creatingNewTheme: false
+    });
 
     // Reset the dropdown
-    var optionToSelect = $('.dropdown-wrap[data-name="theme-select-color-dropdown"] [data-value="' + this.state.originalThemeName + '"]');
-    optionToSelect.closest('.item.row').trigger('click');
-
     this.setSelectedTheme(themeName, this.state.allCustomThemesData)
       .then(() => {
         this.closePopup();
       });
-
-    //window.closePopUp();
 
   }
 
