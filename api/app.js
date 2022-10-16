@@ -10,6 +10,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var updateUserSettings = require("./routes/updateUserSettings");
+var updateCustomTheme = require("./routes/updateCustomTheme");
 
 var deleteTheme = require("./routes/deleteTheme");
 var getUserThemes = require("./routes/getUserThemes");
@@ -17,6 +18,7 @@ var getDefaultThemes = require("./routes/getDefaultThemes");
 
 var getUser = require("./routes/getUser");
 var insertUser = require("./routes/insertUser");
+var insertCustomTheme = require("./routes/insertCustomTheme");
 
 var app = express();
 
@@ -36,6 +38,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 app.use("/updateUserSettings", updateUserSettings);
+app.use("/updateCustomTheme", updateCustomTheme);
 
 app.use("/getUserThemes", getUserThemes);
 app.use("/getDefaultThemes", getDefaultThemes);
@@ -43,6 +46,7 @@ app.use("/deleteTheme", deleteTheme);
 
 app.use("/getUser", getUser);
 app.use("/insertUser", insertUser);
+app.use("/insertCustomTheme", insertCustomTheme);
 
 
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })

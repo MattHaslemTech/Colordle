@@ -10,7 +10,7 @@ var router = express.Router();
  */
 router.get("/", function(req, res, next) {
 
-    var userId = req.query.user;
+    var userId = req.query.creatorId;
 
     // Make sure user only has letters and numbers in it
     const userPattern = /^[A-Za-z0-9]+$/;
@@ -29,8 +29,29 @@ router.get("/", function(req, res, next) {
 
     connection.connect();
 
-    var query = "INSERT INTO `users` (sessionId) VALUES ( ? )";
+
+
+    var query = "INSERT INTO `custom-themes` (";
+
+    // Set keys/column names and values
     var queryParams = [userId];
+
+    // Add column names
+    for(var key in req.query)
+    {
+      query += key + ", ";
+    }
+    // remove trailing comma
+    query = query.slice(0, -2);
+    query += ") VALUES (";
+
+    // Add values
+    for(var key in req.query)
+    {
+      query += "'" + req.query[key] + "', ";
+    }
+    query = query.slice(0, -2);
+    query += ")";
 
     console.log(query);
 
@@ -41,7 +62,7 @@ router.get("/", function(req, res, next) {
       res.send(rows);
     })
 
-    connection.end()
+    connection.end();
 
 });
 

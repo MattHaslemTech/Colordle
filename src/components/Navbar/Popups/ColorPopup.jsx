@@ -184,8 +184,6 @@ class ColorPopUp extends React.Component {
     const selectedTheme =  await getTheme(selectedThemeName);
     var colors;
 
-    console.log("Selected THEME : ", selectedTheme);
-    console.log("Selected THEME typeof : ", typeof selectedTheme);
     if(Object.keys(selectedTheme).length > 0)
     {
       colors = selectedTheme;
@@ -194,9 +192,6 @@ class ColorPopUp extends React.Component {
     {
       var themeData = allCustomThemesData.find(o => o.themeName === selectedThemeName);
       colors = hyphenateColorArray(themeData);
-      console.log("themeData ::: ", themeData);
-      console.log("COLORS : ", colors);
-      console.log("allCustomThemesData ::; ", allCustomThemesData);
     }
 
 
@@ -464,9 +459,15 @@ class ColorPopUp extends React.Component {
 
       var themeName = "Custom-" + numOfCustom;
 
+      themesWithCustomInIt.push(themeName);
       // Set the state so we know what custom theme has been created (so we can save or delete it later)
-      this.setState({themeNameToSave: themeName});
-      this.setState({selectedThemeName: themeName});
+      this.setState({
+        themeNameToSave: themeName,
+        selectedThemeName: themeName,
+        customThemeNames: themesWithCustomInIt
+
+      });
+      this.setState({});
 
 
        /*
@@ -584,13 +585,44 @@ class ColorPopUp extends React.Component {
         .then(res => console.log("Updated user settings!", res))
     this.setState({savedThemeName: themeName, originalThemeName: themeName});
 
-    /*
-    // Update saved theme values
+
+
+    // Check to see if we need to update a theme or create a new one.
+    var query = "http://localhost:9000/";
+    if(this.state.creatingNewTheme)
+    {
+      query += "insertCustomTheme?";
+    }
+    else
+    {
+      query += "updateCustomTheme?";
+    }
+    query += "creatorId=" + localStorage.getItem("userId") + "&themeName=" + themeName + "&";
+
+    // Gather the color values to save.
     let themeValuesToSave = {...this.state.colorValuesToSave};
     // We only want the color values
     themeValuesToSave = Object.assign(...Object.keys(themeValuesToSave)
             .filter( key => { return themeValuesToSave[key].toString().includes("rgba(")} )
             .map( key => ({ [key]: themeValuesToSave[key] }) ) );
+
+    console.log("Theme Values to save : ", themeValuesToSave);
+    for(var colorIndex in themeValuesToSave)
+    {
+      query += colorIndex + "=" + themeValuesToSave[colorIndex] + "&";
+    }
+
+    // Remove the last & from the query
+    query = query.slice(0, -1);
+
+    fetch(query)
+        .then(res => res.text())
+        .then(res => console.log("Updated " + themeName + " theme!", res))
+
+    this.setState({creatingNewTheme: false});
+
+    /*
+
 
     var tempRgbaArr = [];
     var tempChosenColor = "";
@@ -660,8 +692,6 @@ class ColorPopUp extends React.Component {
 
     for(var themeIndex in customThemes)
     {
-      console.log("Test theme : " + customThemes[themeIndex]);
-
       if(this.state.selectedThemeName == customThemes[themeIndex])
       {
         return true;
