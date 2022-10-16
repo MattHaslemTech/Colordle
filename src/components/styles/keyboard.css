@@ -55,5 +55,6 @@
 }
 
 .keyboard-wrap .letter[data-type="not-in-word"] {
+  opacity: 0.5;
   color: var(--letter-not-in-word-text-color);
 }

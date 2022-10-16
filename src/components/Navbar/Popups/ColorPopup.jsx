@@ -580,7 +580,7 @@ class ColorPopUp extends React.Component {
     let themeName = this.state.themeNameToSave;
 
     // Save theme name in json
-    fetch("http://localhost:9000/updateUserSettings?keyName=currentTheme&value=" + this.state.themeNameToSave + "&saveTheme=true&userId=" + localStorage.getItem("userId"))
+    fetch(process.env.REACT_APP_API_URL + "/updateUserSettings?keyName=currentTheme&value=" + this.state.themeNameToSave + "&saveTheme=true&userId=" + localStorage.getItem("userId"))
         .then(res => res.text())
         .then(res => console.log("Updated user settings!", res))
     this.setState({savedThemeName: themeName, originalThemeName: themeName});
@@ -588,7 +588,7 @@ class ColorPopUp extends React.Component {
 
 
     // Check to see if we need to update a theme or create a new one.
-    var query = "http://localhost:9000/";
+    var query = process.env.REACT_APP_API_URL + "/";
     if(this.state.creatingNewTheme)
     {
       query += "insertCustomTheme?";
@@ -632,7 +632,7 @@ class ColorPopUp extends React.Component {
       tempRgbaArr = value.replaceAll(/\s/g,'').replace('rgba(','').replace(')','').split(',')
 
       // Update values
-      fetch("http://localhost:9000/updateUserSettings?r=" + tempRgbaArr[0] + "&g=" + tempRgbaArr[1] + "&b=" + tempRgbaArr[2] +  "&a=" + tempRgbaArr[3] +  "&colorType=" + index + "&currentTheme=" + themeName)
+      fetch(process.env.REACT_APP_API_URL + /updateUserSettings?r=" + tempRgbaArr[0] + "&g=" + tempRgbaArr[1] + "&b=" + tempRgbaArr[2] +  "&a=" + tempRgbaArr[3] +  "&colorType=" + index + "&currentTheme=" + themeName)
           .then(res => res.text())
           .then(res => console.log("Res : " + res));
 

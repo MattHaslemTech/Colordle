@@ -9,6 +9,7 @@ import LoadingScreen from "./Items/LoadingScreen";
 
 import './styles/game.css';
 import raw from '../files/wordle-dictionary.txt';
+import wordleAnswerList from '../files/wordle-answer-list.txt';
 
 import {updateGameTheme} from '../functions/updateGameTheme';
 
@@ -16,11 +17,37 @@ import {updateGameTheme} from '../functions/updateGameTheme';
  * Load Dictionary
  */
 let DICTIONARY;
-fetch(raw)
-  .then(r => r.text())
-  .then(text => {
-    DICTIONARY = text;
-  });
+  async function getDictionary() {
+    return fetch(raw)
+    .then(r => r.text())
+    .then(text => {
+      DICTIONARY = text;
+      return DICTIONARY;
+    });
+  }
+
+  // Get answers
+  let ANSWER_LIST;
+  async function getAnswers(type) {
+
+    var answerFile;
+
+    switch(type) {
+      case ("wordle") :
+        answerFile = wordleAnswerList;
+        break;
+      default :
+        answerFile = wordleAnswerList;
+        break;
+    }
+
+    return fetch(answerFile)
+    .then(r => r.text())
+    .then(text => {
+      ANSWER_LIST = text;
+      return ANSWER_LIST;
+    });
+  }
 
 class Game extends React.Component {
 
@@ -28,7 +55,7 @@ class Game extends React.Component {
   {
     super(props);
     this.state = {
-      answer: ["r","a","i","s","r"],
+      answer: [],
       guesses: [],
       selectedLetters: [],
       maxLetters: 5,
@@ -38,13 +65,19 @@ class Game extends React.Component {
       correctLetters: [],
       guessTypes: [], // This is going to be a matrix with guesses. each value is going to be an array lik [0, 1, 2, 0, 2]. 0: not in word, 1: in word, 2: in correct spot
       error: "",
+      type: "wordle",
     }
   }
 
 
-  componentDidMount()
+  async componentDidMount()
   {
 
+    // Set the DICTIONARY
+    await getDictionary();
+
+    // Set answer list
+    await getAnswers(this.state.type);
 
     // Set session for the user
     if(!localStorage.getItem("userId"))
@@ -54,10 +87,10 @@ class Game extends React.Component {
 
       // Need to create a new user in the database
       fetch(process.env.REACT_APP_API_URL + "/insertUser?user=" + tempId)
-                  .then(res => {
-                    console.log('New User Created => ' + res);
-                    updateGameTheme('Slate (default)');
-                  });
+        .then(res => {
+          console.log('New User Created => ' + res);
+          updateGameTheme('Slate (default)');
+        });
 
     }
     else
@@ -65,8 +98,65 @@ class Game extends React.Component {
       this.setInitialTheme();
     }
 
+    // Set the answer word
+    this.setAnswer();
+  }
 
-    console.log("USER ID: " + localStorage.getItem("userId"));
+
+  /*
+   * Sets the answer for the day
+   */
+  setAnswer = async () => {
+    var answersArr = ANSWER_LIST.split(/\r?\n/);
+
+    var currDate = new Date()
+    currDate.setUTCHours(0,0,0,0);// Set hours to very beginning of the day
+
+
+    //currDate = currDate.toISOString().slice(0, 19).replace('T', ' '); // This sets it to SQL standard
+
+    // Get the last answer from the database
+    var currWord = fetch(process.env.REACT_APP_API_URL + "/getMetaData?keyName=currentAnswer")
+      .then(res => res.json())
+      .then(res => {
+        // Get the date of the last word answer
+        var lastAnswerDate = new Date(res.time);
+        lastAnswerDate.setUTCHours(0,0,0,0); // Set hours to very beginning of the day
+
+        // Calculate the number of days between today and the last answers date
+        var Difference_In_Time = currDate.getTime() - lastAnswerDate.getTime();
+        var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+        // If the last answer isn't from today, update it
+        if(Difference_In_Days > 0)
+        {
+          // Find the index of the last answer in the dictionary
+          var lastAnswerIndex = answersArr.indexOf(res.valueData);
+
+          // get the new answer
+          var newAnswer = answersArr[lastAnswerIndex + Difference_In_Days];
+
+          // Set the state
+          var newAnswerArr = newAnswer.split('');
+          this.setState({answer: newAnswerArr});
+
+          currDate = currDate.toISOString().slice(0, 19).replace('T', ' '); // This sets it to SQL standard
+
+          // Update the database
+          fetch(process.env.REACT_APP_API_URL + "/updateMetaData?keyName=currentAnswer&valueData=" + newAnswer + "&time=" + currDate);
+
+        }
+        else
+        {
+          // Set the current answer as todays answer
+          var todaysAnswer = res.valueData;
+          todaysAnswer = todaysAnswer.split('');
+          this.setState({answer: todaysAnswer});
+
+        }
+
+      });
+
   }
 
   /*
@@ -296,7 +386,6 @@ class Game extends React.Component {
     letters.forEach(function(letter){
       word += letter;
     })
-
     if(DICTIONARY.includes(word))
     {
       return true;
