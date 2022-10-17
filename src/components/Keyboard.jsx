@@ -67,6 +67,12 @@ class Keyboard extends React.Component{
 
   handleKeyClick = (letter) =>
   {
+    // If the game is over, forget about it
+    if(this.props.gameOver)
+    {
+        return 0;
+    }
+
     // Copy current letters
     var currentLetters = this.props.selectedLetters.slice();
 

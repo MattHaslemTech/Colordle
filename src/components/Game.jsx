@@ -7,6 +7,8 @@ import Message from "./Message";
 import Navbar from "./Navbar/Navbar";
 import LoadingScreen from "./Items/LoadingScreen";
 
+import GameResultsPopup from "./Navbar/Popups/GameResultsPopup";
+
 import './styles/game.css';
 import raw from '../files/wordle-dictionary.txt';
 import wordleAnswerList from '../files/wordle-answer-list.txt';
@@ -59,6 +61,7 @@ class Game extends React.Component {
       guesses: [],
       selectedLetters: [],
       maxLetters: 5,
+      maxGuesses: 6,
       currentRow: 0,
       wrongLetters: [],
       misplacedLetters: [],
@@ -66,6 +69,11 @@ class Game extends React.Component {
       guessTypes: [], // This is going to be a matrix with guesses. each value is going to be an array lik [0, 1, 2, 0, 2]. 0: not in word, 1: in word, 2: in correct spot
       error: "",
       type: "wordle",
+
+      gameResultsPopupOpen: false,
+
+      win: false,
+      gameOver: false,
     }
   }
 
@@ -256,6 +264,8 @@ class Game extends React.Component {
      }
 
 
+
+
     // Check if letter is in right spot ( we're going to put arrays in each )
     var tempGuessTypes = [];
     for(var i = 0; i < this.state.maxLetters; i++)
@@ -375,8 +385,54 @@ class Game extends React.Component {
     var nextRow = this.state.currentRow+ 1;
     this.setState({currentRow: nextRow});
 
+    /*
+     * If the answer is correct
+     */
+    console.log("selectedLetters L ", selectedLetters);
+    console.log("answer L ", answer);
+    if(selectedLetters.toString() === answer.toString())
+    {
+      this.setState({
+        win: true,
+        gameOver: true,
+      });
+
+      setTimeout(() => {
+        this.setState({gameResultsPopupOpen: true});
+      }, 1500)
+
+      this.updateStatistics("win");
+    }
+
+    /*
+     * If we lost
+     */
+     if(guesses.length >= this.state.maxGuesses)
+     {
+       this.setState({
+         gameOver: true,
+       });
+
+       setTimeout(() => {
+         this.setState({gameResultsPopupOpen: true});
+       }, 1500)
+
+       this.updateStatistics("loss");
+     }
+
 
   }
+
+  /*
+   * Update the statistics once the game is over
+   */
+   updateStatistics = (winOrLose) => {
+     console.log(winOrLose);
+     if(winOrLose == "win")
+     {
+       this.setState({win: true});
+     }
+   }
 
 
   checkDictionary(letters)
@@ -438,21 +494,27 @@ class Game extends React.Component {
 
           <Message message={this.state.error} />
           <Board  maxLetters={this.state.maxLetters}
-                  selectedLetters={this.state.selectedLetters}
-                  selectedLettersSize={this.state.selectedLetters.length}
-                  currentRow={this.state.currentRow}
-                  guesses={this.state.guesses}
-                  guessTypes={this.state.guessTypes}
+            selectedLetters={this.state.selectedLetters}
+            selectedLettersSize={this.state.selectedLetters.length}
+            currentRow={this.state.currentRow}
+            guesses={this.state.guesses}
+            guessTypes={this.state.guessTypes}
           />
           <Keyboard addLetter={this.addSelectedLetters}
-                    updateSelectedLetters={this.updateSelectedLetters}
-                    handleSubmit={this.handleSubmit}
-                    selectedLetters={this.state.selectedLetters}
-                    maxLetters={this.state.maxLetters}
-                    correctLetters={this.state.correctLetters}
-                    misplacedLetters={this.state.misplacedLetters}
-                    wrongLetters={this.state.wrongLetters}
-                    />
+            updateSelectedLetters={this.updateSelectedLetters}
+            handleSubmit={this.handleSubmit}
+            selectedLetters={this.state.selectedLetters}
+            maxLetters={this.state.maxLetters}
+            correctLetters={this.state.correctLetters}
+            misplacedLetters={this.state.misplacedLetters}
+            wrongLetters={this.state.wrongLetters}
+            gameOver={this.state.gameOver}
+          />
+          <GameResultsPopup
+            gameResultsPopupOpen={this.state.gameResultsPopupOpen}
+            wordSize={this.state.maxLetters}
+            won={this.state.win}
+          />
         </div>
       </div>
       </>
