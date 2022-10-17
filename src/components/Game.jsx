@@ -426,12 +426,23 @@ class Game extends React.Component {
   /*
    * Update the statistics once the game is over
    */
-   updateStatistics = (winOrLose) => {
+   updateStatistics = async (winOrLose) => {
      console.log(winOrLose);
+     var won = 0;
      if(winOrLose == "win")
      {
+       won = 1;
        this.setState({win: true});
      }
+
+     var currDate = new Date()
+     currDate.setUTCHours(0,0,0,0)
+     currDate = currDate.toISOString().slice(0, 19).replace('T', ' '); // This sets it to SQL standard
+
+     var answer = this.state.answer.join("");
+     var query = process.env.REACT_APP_API_URL + "/insertGameResults?userId=" + localStorage.getItem("userId") + "&won=" + won + "&numberOfGuesses=" + this.state.guesses.length + "&date=" + currDate + "&word=" + answer;
+
+     await fetch(query);
    }
 
 
@@ -514,6 +525,7 @@ class Game extends React.Component {
             gameResultsPopupOpen={this.state.gameResultsPopupOpen}
             wordSize={this.state.maxLetters}
             won={this.state.win}
+            maxGuesses={this.state.maxGuesses}
           />
         </div>
       </div>

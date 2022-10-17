@@ -21,6 +21,7 @@ var getMetaData = require("./routes/getMetaData");
 var getUser = require("./routes/getUser");
 var insertUser = require("./routes/insertUser");
 var insertCustomTheme = require("./routes/insertCustomTheme");
+var insertGameResults = require("./routes/insertGameResults");
 
 var app = express();
 
@@ -52,6 +53,7 @@ app.use("/deleteTheme", deleteTheme);
 app.use("/getUser", getUser);
 app.use("/insertUser", insertUser);
 app.use("/insertCustomTheme", insertCustomTheme);
+app.use("/insertGameResults", insertGameResults);
 
 
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
