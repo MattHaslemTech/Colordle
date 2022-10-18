@@ -11,6 +11,16 @@
 
   padding: 15px 0px
 }
+
+.keyboard-wrap.disabled {
+  opacity: 0.5;
+}
+
+.keyboard-wrap.disabled .letter {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .keyboard-wrap .row {
   flex: 1;
   display: flex;

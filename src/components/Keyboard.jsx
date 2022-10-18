@@ -156,7 +156,7 @@ class Keyboard extends React.Component{
     var fullKeyboard = this.buildKeyboard();
     return(
       <>
-        <div className="keyboard-wrap">
+        <div className={this.props.gameOver ? "disabled keyboard-wrap" : "keyboard-wrap"}>
           <div className="row">
             {fullKeyboard[0]}
           </div>

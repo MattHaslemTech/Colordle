@@ -74,6 +74,12 @@ class Game extends React.Component {
 
       win: false,
       gameOver: false,
+
+      totalWins: 0,
+      totalLosses: 0,
+      guessesStatistics: [],
+      winPercentage: 0,
+
     }
   }
 
@@ -107,7 +113,49 @@ class Game extends React.Component {
     }
 
     // Set the answer word
-    this.setAnswer();
+    var todaysAnswer = await this.setAnswer();
+
+    // Get the game results for this user for todays word
+    // Check if user already did this answer
+    var currentGameResultsRow = await fetch(process.env.REACT_APP_API_URL + "/getGameResults?userId=" + localStorage.getItem("userId") + "&word=" + todaysAnswer);
+    var currentGameResultsData = {};
+    try {
+      currentGameResultsData = await currentGameResultsRow.json();
+    }
+    catch (err) {
+      console.log("No game results!", err);
+    }
+
+    if(Object.keys(currentGameResultsData).length > 0)
+    {
+      currentGameResultsData = currentGameResultsData[0];
+      var won = 0;
+      if(currentGameResultsData.won)
+      {
+        won = 1;
+      }
+      this.setState({
+        win: won,
+        gameOver: true,
+        gameResultsPopupOpen: true,
+      });
+
+      var guesses = currentGameResultsData.guesses.split(",");
+      var guessesArr = [];
+      for(var guessesIndex in guesses)
+      {
+        guessesArr.push(guesses[guessesIndex].split(""));
+      }
+
+      this.setState({
+        guesses: guessesArr,
+      });
+    }
+
+
+    // Get all the game results for this user
+    this.getAllGameResults();
+
   }
 
 
@@ -124,7 +172,7 @@ class Game extends React.Component {
     //currDate = currDate.toISOString().slice(0, 19).replace('T', ' '); // This sets it to SQL standard
 
     // Get the last answer from the database
-    var currWord = fetch(process.env.REACT_APP_API_URL + "/getMetaData?keyName=currentAnswer")
+    return fetch(process.env.REACT_APP_API_URL + "/getMetaData?keyName=currentAnswer")
       .then(res => res.json())
       .then(res => {
         // Get the date of the last word answer
@@ -153,19 +201,88 @@ class Game extends React.Component {
           // Update the database
           fetch(process.env.REACT_APP_API_URL + "/updateMetaData?keyName=currentAnswer&valueData=" + newAnswer + "&time=" + currDate);
 
+          return newAnswer;
         }
         else
         {
           // Set the current answer as todays answer
-          var todaysAnswer = res.valueData;
-          todaysAnswer = todaysAnswer.split('');
+          var todaysAnswerString = res.valueData;
+          var todaysAnswer = todaysAnswerString.split('');
           this.setState({answer: todaysAnswer});
 
+          return todaysAnswerString;
         }
 
       });
 
+
   }
+
+
+  /*
+   * Get all game results data with this user
+   */
+  getAllGameResults = async () => {
+    var allGameResultsRow = await fetch(process.env.REACT_APP_API_URL + "/getGameResults?userId=" + localStorage.getItem("userId"));
+    var allGameResultsData = {};
+    try {
+      allGameResultsData = await allGameResultsRow.json();
+    }
+    catch (err) {
+      console.log("No game results!", err);
+    }
+
+    if(Object.keys(allGameResultsData).length > 0)
+    {
+      console.log("gameResultsData : ", allGameResultsData);
+      console.log("gameResultsData 2: ", Object.keys(allGameResultsData).length);
+
+      var wins = 0;
+      var losses = 0;
+      var guessesStatistics = Array(this.state.maxGuesses).fill(0); // Holds the amount of times this amout of guesses was used
+      for(var dataIndex in allGameResultsData)
+      {
+        // get the count of rows (if there's only one row, it won't be an object of objects, just an object with that one row with 7 keys )
+
+        var row = allGameResultsData[dataIndex];
+        if(row.won)
+        {
+          wins++;
+        }
+        else
+        {
+          losses++;
+        }
+
+        var guesses = row.guesses.split(",");
+
+        guessesStatistics[guesses.length-1]++;
+
+        var totalNumberOfGames = Object.keys(allGameResultsData).length;
+
+        // Calculate the Percentage of wins
+        var winPercentage = (wins / totalNumberOfGames) * 100;
+        winPercentage = Math.ceil(winPercentage);
+
+        this.setState({
+          totalWins: wins,
+          totalLosses: losses,
+          guessesStatistics: guessesStatistics,
+          totalNumberOfGames: totalNumberOfGames,
+          winPercentage: winPercentage,
+        });
+      }
+
+    }
+  }
+
+  /*
+   * Gets results from game-results with query
+   */
+  getGameResults = async () => {
+
+  }
+
 
   /*
    * Update letters on board from keyboard interaction
@@ -388,8 +505,6 @@ class Game extends React.Component {
     /*
      * If the answer is correct
      */
-    console.log("selectedLetters L ", selectedLetters);
-    console.log("answer L ", answer);
     if(selectedLetters.toString() === answer.toString())
     {
       this.setState({
@@ -427,20 +542,61 @@ class Game extends React.Component {
    * Update the statistics once the game is over
    */
    updateStatistics = async (winOrLose) => {
-     console.log(winOrLose);
+     var totalLosses = this.state.totalLosses;
+
+     var totalNumberOfGames = this.state.totalNumberOfGames;
+     totalNumberOfGames++;
+
+     var totalWins = this.state.totalWins;
+
+     var guessesStatistics = this.state.guessesStatistics;
+     guessesStatistics[this.state.guesses.length]++;
+
      var won = 0;
      if(winOrLose == "win")
      {
        won = 1;
        this.setState({win: true});
+       totalWins++;
+     }
+     else
+     {
+       totalLosses++;
      }
 
+     /*
+      * Update the data we're sending to the gameResults popup
+      */
+     var winPercentage = totalWins / totalNumberOfGames * 100;
+     winPercentage = Math.ceil(winPercentage);
+     this.setState({
+       totalLosses: totalLosses,
+       totalNumberOfGames: totalNumberOfGames,
+       totalWins: totalWins,
+       guessesStatistics: guessesStatistics,
+       winPercentage: winPercentage,
+     });
+
+     // Set the current date
      var currDate = new Date()
      currDate.setUTCHours(0,0,0,0)
      currDate = currDate.toISOString().slice(0, 19).replace('T', ' '); // This sets it to SQL standard
 
+     // Get the answer
      var answer = this.state.answer.join("");
-     var query = process.env.REACT_APP_API_URL + "/insertGameResults?userId=" + localStorage.getItem("userId") + "&won=" + won + "&numberOfGuesses=" + this.state.guesses.length + "&date=" + currDate + "&word=" + answer;
+
+     // Set the guesses seperated by comma
+     var guesses = this.state.guesses;
+     var guessesString = "";
+     for(var guessIndex in guesses)
+     {
+       guessesString += guesses[guessIndex].join("") + ",";
+     }
+     guessesString += answer;
+
+     console.log("guessesString : ", guessesString);
+
+     var query = process.env.REACT_APP_API_URL + "/insertGameResults?userId=" + localStorage.getItem("userId") + "&won=" + won + "&numberOfGuesses=" + this.state.guesses.length + "&date=" + currDate + "&word=" + answer + "&guesses=" + guessesString;
 
      await fetch(query);
    }
@@ -526,6 +682,12 @@ class Game extends React.Component {
             wordSize={this.state.maxLetters}
             won={this.state.win}
             maxGuesses={this.state.maxGuesses}
+            totalNumberOfGames={this.state.totalNumberOfGames}
+            totalWins={this.state.totalWins}
+            totalLosses={this.state.totalLosses}
+            guessesStatistics={this.state.guessesStatistics}
+            winPercentage={this.state.winPercentage}
+            guesses={this.state.guesses}
           />
         </div>
       </div>

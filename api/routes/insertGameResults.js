@@ -27,7 +27,7 @@ router.get("/", function(req, res, next) {
       multipleStatements: false
     })
 
-    connection.connect();
+    connection.connect(); 
 
 
 
@@ -35,7 +35,7 @@ router.get("/", function(req, res, next) {
 
     // Set keys/column names and values
     var queryParams = [userId];
- 
+
     // Add column names
     for(var key in req.query)
     {

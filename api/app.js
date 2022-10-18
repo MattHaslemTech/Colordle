@@ -17,6 +17,7 @@ var deleteTheme = require("./routes/deleteTheme");
 var getUserThemes = require("./routes/getUserThemes");
 var getDefaultThemes = require("./routes/getDefaultThemes");
 var getMetaData = require("./routes/getMetaData");
+var getGameResults = require("./routes/getGameResults");
 
 var getUser = require("./routes/getUser");
 var insertUser = require("./routes/insertUser");
@@ -47,6 +48,7 @@ app.use("/updateMetaData", updateMetaData);
 app.use("/getUserThemes", getUserThemes);
 app.use("/getDefaultThemes", getDefaultThemes);
 app.use("/getMetaData", getMetaData);
+app.use("/getGameResults", getGameResults);
 
 app.use("/deleteTheme", deleteTheme);
 

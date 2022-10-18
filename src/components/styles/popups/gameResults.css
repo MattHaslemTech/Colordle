@@ -6,7 +6,7 @@
 }
 
 
-.statistics-wrap .guess-number-wrap {
+.statistics-wrap .guess-number-wrap{
   display: flex;
   flex-direction: column;
   align-content: center;
@@ -17,7 +17,6 @@
   box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
 }
 
-
 .statistics-wrap .guess-number-wrap * {
   text-align: center;
 }
@@ -25,10 +24,39 @@
 .statistics-wrap .guess-number-wrap .stat-number {
   font-size: 22px;
   font-weight: bold;
-  margin-bottom: 10px;
+  padding: 10px;
 }
 
 .statistics-wrap .guess-number-wrap .label {
   background: var(--navbar-bg-color);
   border-radius: 0px 0px 5px 5px;
+}
+
+
+
+
+.statistics-wrap .stats-item-wrap {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  margin: 10px;
+  border-radius: 5px;
+  width: 145px;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+}
+
+.statistics-wrap .stats-item-wrap .stat-number {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding: 15px;
+  text-align: center;
+}
+
+.statistics-wrap .stats-item-wrap .label {
+  background: var(--navbar-bg-color);
+  border-radius: 0px 0px 5px 5px;
+  padding: 15px;
+  text-align: center;
 }
